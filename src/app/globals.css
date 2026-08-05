@@ -1,0 +1,186 @@
+@import "tailwindcss";
+
+:root {
+  --background: 245 245 247;
+  --foreground: 17 24 39;
+  --card: 255 255 255;
+  --card-foreground: 17 24 39;
+  --popover: 255 255 255;
+  --popover-foreground: 17 24 39;
+  --primary: 24 24 27;
+  --primary-foreground: 255 255 255;
+  --secondary: 79 70 229;
+  --secondary-foreground: 255 255 255;
+  --accent: 107 114 128;
+  --accent-foreground: 17 24 39;
+  --success: 22 163 74;
+  --success-foreground: 255 255 255;
+  --muted: 229 231 235;
+  --muted-foreground: 107 114 128;
+  --border: 226 232 240;
+  --input: 226 232 240;
+  --ring: 24 24 27;
+  --radius: 1rem;
+}
+
+.dark {
+  --background: 5 5 10;
+  --foreground: 244 244 245;
+  --card: 12 13 20;
+  --card-foreground: 244 244 245;
+  --popover: 12 13 20;
+  --popover-foreground: 244 244 245;
+  --primary: 124 58 237;
+  --primary-foreground: 255 255 255;
+  --secondary: 79 70 229;
+  --secondary-foreground: 255 255 255;
+  --accent: 30 27 75;
+  --accent-foreground: 244 244 245;
+  --success: 16 185 129;
+  --success-foreground: 255 255 255;
+  --muted: 24 24 35;
+  --muted-foreground: 161 161 170;
+  --border: 24 24 35;
+  --input: 24 24 35;
+  --ring: 124 58 237;
+  --radius: 1rem;
+}
+
+@theme {
+  --color-background: rgb(var(--background));
+  --color-foreground: rgb(var(--foreground));
+  --color-card: rgb(var(--card));
+  --color-card-foreground: rgb(var(--card-foreground));
+  --color-popover: rgb(var(--popover));
+  --color-popover-foreground: rgb(var(--popover-foreground));
+  --color-primary: rgb(var(--primary));
+  --color-primary-foreground: rgb(var(--primary-foreground));
+  --color-secondary: rgb(var(--secondary));
+  --color-secondary-foreground: rgb(var(--secondary-foreground));
+  --color-accent: rgb(var(--accent));
+  --color-accent-foreground: rgb(var(--accent-foreground));
+  --color-success: rgb(var(--success));
+  --color-success-foreground: rgb(var(--success-foreground));
+  --color-muted: rgb(var(--muted));
+  --color-muted-foreground: rgb(var(--muted-foreground));
+  --color-border: rgb(var(--border));
+  --color-input: rgb(var(--input));
+  --color-ring: rgb(var(--ring));
+  --radius-xl: var(--radius);
+  --font-sans: var(--font-outfit), var(--font-geist-sans), sans-serif;
+  --font-mono: var(--font-geist-mono), monospace;
+}
+
+body {
+  background-color: rgb(var(--background));
+  color: rgb(var(--foreground));
+  font-feature-settings: "rlig" 1, "calt" 1;
+}
+
+/* Custom premium scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(120, 120, 120, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(120, 120, 120, 0.5);
+}
+
+/* Glassmorphism utility */
+.glass {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.dark .glass {
+  background: rgba(15, 15, 20, 0.65);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Dynamic glow effects */
+.glow-primary {
+  box-shadow: 0 0 40px -5px rgba(37, 99, 235, 0.2);
+}
+
+.dark .glow-primary {
+  box-shadow: 0 0 50px -10px rgba(59, 130, 246, 0.3);
+}
+
+.glow-secondary {
+  box-shadow: 0 0 40px -5px rgba(79, 70, 229, 0.2);
+}
+
+.dark .glow-secondary {
+  box-shadow: 0 0 50px -10px rgba(99, 102, 241, 0.3);
+}
+
+/* Premium background patterns */
+.grid-pattern {
+  background-image: radial-gradient(rgba(120, 120, 120, 0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.dark .grid-pattern {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+}
+
+@keyframes float-glow-left {
+  0%, 100% { transform: translate(0px, 0px) scale(1); opacity: 0.6; }
+  33% { transform: translate(60px, -90px) scale(1.12); opacity: 0.85; }
+  66% { transform: translate(-40px, 50px) scale(0.92); opacity: 0.55; }
+}
+
+@keyframes float-glow-right {
+  0%, 100% { transform: translate(0px, 0px) scale(1); opacity: 0.55; }
+  50% { transform: translate(-70px, 90px) scale(1.18); opacity: 0.8; }
+}
+
+@keyframes float-glow-center {
+  0%, 100% { transform: translate(0px, 0px) scale(1); opacity: 0.7; }
+  50% { transform: translate(60px, -60px) scale(0.88); opacity: 0.5; }
+}
+
+.animate-glow-left {
+  animation: float-glow-left 20s ease-in-out infinite;
+}
+
+.animate-glow-right {
+  animation: float-glow-right 24s ease-in-out infinite;
+}
+
+.animate-glow-center {
+  animation: float-glow-center 18s ease-in-out infinite;
+}
+
+/* Infinite marquee for reviews */
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 40s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
