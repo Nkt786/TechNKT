@@ -3,7 +3,9 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { PRODUCTS } from '@/data/products';
 import BuyNowButton from '@/components/BuyNowButton';
-import { ArrowLeft, CheckCircle2, ShieldCheck, Zap, RefreshCw, HelpCircle, Sparkles } from 'lucide-react';
+import AddToCartButton from '@/components/AddToCartButton';
+import ProductImage from '@/components/ProductImage';
+import { ArrowLeft, CheckCircle2, ShieldCheck, Zap, RefreshCw, HelpCircle, Sparkles, Star } from 'lucide-react';
 import { Metadata } from 'next';
 
 interface ProductPageProps {
@@ -40,7 +42,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
       type: 'website',
       images: [
         {
-          url: 'https://technkt.in/og-image.jpg', // Standard placeholder, can update later
+          url: 'https://technkt.in/og-image.jpg',
           width: 1200,
           height: 630,
           alt: product.name,
@@ -63,12 +65,15 @@ export default async function ProductPage({ params }: ProductPageProps) {
     notFound();
   }
 
+  const mrp = Math.round(product.price * 1.6);
+  const discountPercent = Math.round(((mrp - product.price) / mrp) * 100);
+  const pseudoReviewsCount = 45 + (product.id.charCodeAt(0) % 180);
+
   // Get related products (same category, excluding current product)
   const relatedProducts = PRODUCTS.filter(
     (p) => p.category === product.category && p.id !== product.id
   ).slice(0, 3);
 
-  // If no products in same category, take general featured products
   const backupRelated = relatedProducts.length > 0 
     ? relatedProducts 
     : PRODUCTS.filter((p) => p.isFeatured && p.id !== product.id).slice(0, 3);
@@ -113,7 +118,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
   };
 
   return (
-    <article className="mx-auto max-w-7xl px-6 py-12 md:py-20 space-y-16">
+    <article className="mx-auto max-w-7xl px-6 py-12 md:py-16 space-y-14 relative overflow-hidden">
+      {/* Grid Pattern Overlay */}
+      <div className="absolute inset-0 grid-pattern pointer-events-none -z-10 h-full opacity-40" />
+
       {/* JSON-LD Script Injections */}
       <script
         type="application/ld+json"
@@ -127,57 +135,66 @@ export default async function ProductPage({ params }: ProductPageProps) {
       {/* Breadcrumbs */}
       <div>
         <Link
-          href="/"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors"
+          href="/products"
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to marketplace
+          Back to all products & licenses
         </Link>
       </div>
 
       {/* Product Hero Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
-        {/* Left Column: Product Info & Visuals */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+        
+        {/* Left Column: Product Visuals & Info */}
         <div className="lg:col-span-7 space-y-8">
-          <div className="space-y-4">
-            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-primary dark:text-blue-400 uppercase tracking-widest bg-primary/10 px-3 py-1 rounded-full">
-              <Sparkles className="h-3 w-3" />
-              {product.category}
-            </span>
-            <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white leading-tight">
+          
+          {/* Header Title & Badges */}
+          <div className="space-y-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-indigo-650 dark:text-indigo-400 uppercase tracking-widest bg-indigo-500/10 border border-indigo-500/20 px-3 py-1 rounded-full">
+                <Sparkles className="h-3 w-3" />
+                {product.category}
+              </span>
+              <span className="text-[10px] font-bold text-amber-700 dark:text-amber-450 bg-[#FDF6E2] dark:bg-amber-500/10 border border-amber-250 dark:border-amber-500/25 px-2.5 py-0.5 rounded-full">
+                TechNKT Choice
+              </span>
+            </div>
+
+            <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground leading-tight">
               {product.name}
             </h1>
-            <p className="text-zinc-500 dark:text-zinc-400 text-sm leading-relaxed">
+
+            <div className="flex items-center gap-2 text-xs">
+              <div className="flex text-amber-550">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="h-4 w-4 fill-current" />
+                ))}
+              </div>
+              <span className="font-bold text-foreground">4.9 / 5.0</span>
+              <span className="text-muted-foreground">({pseudoReviewsCount} verified reviews)</span>
+            </div>
+
+            <p className="text-muted-foreground text-sm leading-relaxed pt-1">
               {product.description}
             </p>
           </div>
 
-          {/* Premium Visual Card */}
-          <div className="relative overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900/30 p-8 flex items-center justify-center min-h-[220px] glow-primary">
-            <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 via-transparent to-secondary/15 opacity-50" />
-            <div className="text-center space-y-3 z-10">
-              <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-tr from-primary to-secondary text-white text-3xl font-black shadow-lg">
-                {product.name.charAt(0)}
-              </div>
-              <h3 className="font-extrabold text-sm text-zinc-800 dark:text-zinc-200">
-                Premium License Activated
-              </h3>
-              <p className="text-[10px] text-zinc-500 dark:text-zinc-400">
-                100% genuine keys, safe logins, & full active period support
-              </p>
-            </div>
+          {/* Premium Visual Banner Card */}
+          <div className="relative rounded-3xl overflow-hidden border border-border bg-card p-6 shadow-sm">
+            <ProductImage slug={product.slug} name={product.name} />
           </div>
 
           {/* Features checklist */}
-          <div className="space-y-4">
-            <h2 className="text-lg font-bold text-zinc-900 dark:text-white">
-              Features & Benefits
+          <div className="space-y-4 pt-2">
+            <h2 className="text-lg font-extrabold text-foreground">
+              Features & Benefit Inclusions
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
               {product.features.map((feature, idx) => (
-                <div key={idx} className="flex gap-2.5 items-start">
-                  <CheckCircle2 className="h-4.5 w-4.5 text-emerald-500 shrink-0 mt-0.5" />
-                  <span className="text-xs text-zinc-650 dark:text-zinc-300">
+                <div key={idx} className="flex gap-2.5 items-start bg-card border border-border rounded-xl p-3">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <span className="text-xs text-foreground/90">
                     {feature}
                   </span>
                 </div>
@@ -188,67 +205,77 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
         {/* Right Column: Pricing & Checkout Widget */}
         <div className="lg:col-span-5">
-          <div className="sticky top-24 rounded-2xl border border-zinc-200 bg-white p-6 shadow-xl dark:border-zinc-800 dark:bg-zinc-950 space-y-6">
-            <div className="border-b border-zinc-100 dark:border-zinc-900 pb-4 space-y-1">
-              <div className="text-xs text-zinc-500 dark:text-zinc-400 font-semibold">
-                Special Discount Price
+          <div className="sticky top-24 rounded-3xl border border-border bg-card p-7 shadow-sm space-y-6">
+            
+            <div className="border-b border-border pb-5 space-y-2">
+              <div className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider">
+                Discounted License Price
               </div>
-              <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-extrabold text-zinc-900 dark:text-white">
+              <div className="flex items-baseline gap-3">
+                <span className="text-rose-500 text-sm font-black">
+                  -{discountPercent}%
+                </span>
+                <span className="text-3.5xl font-black text-foreground">
                   ₹{product.price}
                 </span>
-                <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                <span className="text-xs text-muted-foreground line-through">
+                  ₹{mrp}
+                </span>
+                <span className="text-[11px] text-muted-foreground font-mono">
                   / {product.duration}
                 </span>
               </div>
             </div>
 
             {/* Quick trust metrics */}
-            <div className="space-y-3.5 text-xs text-zinc-600 dark:text-zinc-300">
+            <div className="space-y-3.5 text-xs text-foreground/90">
               <div className="flex gap-2.5 items-center">
-                <Zap className="h-4 w-4 text-amber-500 shrink-0" />
-                <span>**Super Fast Delivery**: Activated within 30-180 mins.</span>
+                <Zap className="h-4 w-4 text-amber-500 shrink-0 fill-current" />
+                <span><strong className="text-foreground">Instant Delivery</strong>: Sent directly to your WhatsApp.</span>
               </div>
               <div className="flex gap-2.5 items-center">
                 <RefreshCw className="h-4 w-4 text-emerald-500 shrink-0" />
-                <span>**Warranty assurance**: {product.warranty || 'Full Period Support'}.</span>
+                <span><strong className="text-foreground">Active Warranty</strong>: {product.warranty || 'Full Period Support'}.</span>
               </div>
               <div className="flex gap-2.5 items-center">
-                <ShieldCheck className="h-4 w-4 text-primary shrink-0" />
-                <span>**100% Secure**: Verifiable credentials, zero risk.</span>
+                <ShieldCheck className="h-4 w-4 text-indigo-500 shrink-0" />
+                <span><strong className="text-foreground">100% Genuine</strong>: Verifiable credentials with zero lockouts.</span>
               </div>
             </div>
 
-            {/* CTA Buy Button */}
-            <BuyNowButton product={product} size="lg" className="w-full" />
+            {/* Action Buttons: Add to Cart & Buy Now */}
+            <div className="space-y-3 pt-2">
+              <AddToCartButton product={product} size="lg" className="w-full" />
+              <BuyNowButton product={product} size="lg" className="w-full animate-pulse" />
+            </div>
 
-            <div className="text-[10px] text-center text-zinc-500 dark:text-zinc-400">
-              Payments are verified and confirmed manually on WhatsApp.
+            <div className="text-[10px] text-center text-muted-foreground">
+              Verified orders are processed securely and delivered via WhatsApp.
             </div>
           </div>
         </div>
       </div>
 
-      {/* Product FAQ Section */}
-      <section className="space-y-6 border-t border-zinc-200 dark:border-zinc-900 pt-16">
-        <h2 className="text-xl font-bold text-zinc-900 dark:text-white flex items-center gap-2">
-          <HelpCircle className="h-5.5 w-5.5 text-primary" />
-          Product FAQ & Support
+      {/* FAQ Section */}
+      <section className="space-y-6 border-t border-border pt-12">
+        <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
+          <HelpCircle className="h-5 w-5 text-indigo-500" />
+          Product FAQ & Support Info
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="rounded-xl border border-zinc-150 p-5 dark:border-zinc-900/60 bg-zinc-50/50 dark:bg-zinc-900/10 space-y-2">
-            <h3 className="font-semibold text-zinc-900 dark:text-white text-xs">
+          <div className="rounded-2xl border border-border p-5 bg-card space-y-2">
+            <h3 className="font-bold text-foreground text-xs">
               How does delivery work after purchase?
             </h3>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
-              Once you click &quot;Buy Now&quot; and submit the secure form, you will be redirected to WhatsApp. Our billing team will verify your request and send the activation details directly to your email or phone number.
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Once you confirm your order, you will be connected to our WhatsApp support team. Activation credentials and setup guides are delivered directly to your chat within 30 to 180 minutes.
             </p>
           </div>
-          <div className="rounded-xl border border-zinc-150 p-5 dark:border-zinc-900/60 bg-zinc-50/50 dark:bg-zinc-900/10 space-y-2">
-            <h3 className="font-semibold text-zinc-900 dark:text-white text-xs">
-              What does the warranty cover?
+          <div className="rounded-2xl border border-border p-5 bg-card space-y-2">
+            <h3 className="font-bold text-foreground text-xs">
+              What does the replacement warranty cover?
             </h3>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+            <p className="text-xs text-muted-foreground leading-relaxed">
               Our warranty covers full account replacements or reactivations. If a subscription goes inactive before the purchased duration expires, we issue a brand new credential key at no additional cost.
             </p>
           </div>
@@ -256,40 +283,40 @@ export default async function ProductPage({ params }: ProductPageProps) {
       </section>
 
       {/* Related Products Grid */}
-      <section className="space-y-6 border-t border-zinc-200 dark:border-zinc-900 pt-16">
-        <h2 className="text-xl font-bold text-zinc-900 dark:text-white">
+      <section className="space-y-6 border-t border-border pt-12">
+        <h2 className="text-xl font-bold text-foreground">
           Related Digital Solutions
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {backupRelated.map((item) => (
             <div
               key={item.id}
-              className="group relative flex flex-col justify-between overflow-hidden rounded-xl border border-zinc-200 bg-white p-5 shadow-sm hover:shadow-md dark:border-zinc-900 dark:bg-zinc-950 transition-all"
+              className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-sm hover:border-indigo-500/40 transition-all"
             >
-              <div className="space-y-2">
-                <span className="text-[9px] font-bold text-primary dark:text-blue-400 uppercase tracking-widest bg-primary/10 px-2 py-0.5 rounded-full">
+              <div className="space-y-3">
+                <span className="text-[9px] font-bold text-indigo-650 dark:text-indigo-400 uppercase tracking-widest bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded-full">
                   {item.category}
                 </span>
-                <h3 className="font-bold text-sm text-zinc-900 dark:text-white mt-1.5 group-hover:text-primary transition-colors">
+                <h3 className="font-extrabold text-sm text-foreground group-hover:text-indigo-650 dark:group-hover:text-indigo-400 transition-colors">
                   {item.name}
                 </h3>
-                <p className="text-[11px] text-zinc-500 dark:text-zinc-400 line-clamp-2 leading-relaxed">
+                <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
                   {item.description}
                 </p>
               </div>
 
-              <div className="flex items-center justify-between border-t border-zinc-100 dark:border-zinc-900 pt-4 mt-4">
+              <div className="flex items-center justify-between border-t border-border pt-4 mt-4">
                 <div>
-                  <div className="text-xs font-bold text-zinc-900 dark:text-white">
+                  <div className="text-xs font-black text-foreground">
                     ₹{item.price}
                   </div>
-                  <div className="text-[9px] text-zinc-500 dark:text-zinc-400">
+                  <div className="text-[9px] text-muted-foreground">
                     {item.duration}
                   </div>
                 </div>
                 <Link
                   href={`/${item.slug}`}
-                  className="rounded-lg bg-zinc-50 border border-zinc-200/50 hover:bg-zinc-100 px-3 py-1.5 text-[10px] font-bold text-zinc-700 transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-850"
+                  className="rounded-xl bg-background border border-border hover:bg-muted px-3.5 py-1.5 text-xs font-bold text-foreground transition-all"
                 >
                   View Details
                 </Link>

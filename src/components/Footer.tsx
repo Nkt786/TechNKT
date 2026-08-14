@@ -20,17 +20,17 @@ export default function Footer() {
 
   const footerLinks = {
     Categories: [
-      { name: 'AI Subscription Tools', href: '#products' },
-      { name: 'LinkedIn Premium Services', href: '#products' },
-      { name: 'Developer & VPS Software', href: '#products' },
-      { name: 'Creative Cloud Software', href: '#products' },
-      { name: 'OTT Video Entertainment', href: '#products' },
+      { name: 'AI Subscription Tools', href: '/products' },
+      { name: 'LinkedIn Premium Services', href: '/products' },
+      { name: 'Developer & VPS Software', href: '/products' },
+      { name: 'Creative Cloud Software', href: '/products' },
+      { name: 'OTT Video Entertainment', href: '/products' },
     ],
     Company: [
-      { name: 'Why Choose TechNKT', href: '#why-choose-us' },
-      { name: 'Customer Testimonials', href: '#reviews' },
-      { name: 'Frequently Asked Questions', href: '#faq' },
-      { name: 'Website Agency Services', href: '#services' },
+      { name: 'About TechNKT', href: '/about' },
+      { name: 'Our Services', href: '/services' },
+      { name: 'FAQs & Support', href: '/contact' },
+      { name: 'Digital Store', href: '/products' },
     ],
     Legal: [
       { name: 'Terms & Conditions', href: '/terms' },

@@ -1,49 +1,49 @@
 @import "tailwindcss";
 
 :root {
-  --background: 245 245 247;
-  --foreground: 17 24 39;
-  --card: 255 255 255;
-  --card-foreground: 17 24 39;
-  --popover: 255 255 255;
-  --popover-foreground: 17 24 39;
-  --primary: 24 24 27;
+  --background: 3 16 24;      /* Dark Navy #031018 */
+  --foreground: 248 250 252;  /* Slate-White #F8FAFC */
+  --card: 6 26 41;            /* Navy Slate #061A29 */
+  --card-foreground: 248 250 252;
+  --popover: 6 26 41;
+  --popover-foreground: 248 250 252;
+  --primary: 37 99 235;       /* Electric Royal Blue #2563EB */
   --primary-foreground: 255 255 255;
-  --secondary: 79 70 229;
-  --secondary-foreground: 255 255 255;
-  --accent: 107 114 128;
-  --accent-foreground: 17 24 39;
-  --success: 22 163 74;
+  --secondary: 15 32 46;      /* Lighter Navy Slate */
+  --secondary-foreground: 248 250 252;
+  --accent: 124 58 237;       /* Accent Purple #7C3AED */
+  --accent-foreground: 248 250 252;
+  --success: 16 185 129;
   --success-foreground: 255 255 255;
-  --muted: 229 231 235;
-  --muted-foreground: 107 114 128;
-  --border: 226 232 240;
-  --input: 226 232 240;
-  --ring: 24 24 27;
-  --radius: 1rem;
+  --muted: 15 32 46;
+  --muted-foreground: 148 163 184;
+  --border: 20 35 50;         /* Translucent look border */
+  --input: 20 35 50;
+  --ring: 37 99 235;
+  --radius: 0.75rem;
 }
 
 .dark {
-  --background: 5 5 10;
-  --foreground: 244 244 245;
-  --card: 12 13 20;
-  --card-foreground: 244 244 245;
-  --popover: 12 13 20;
-  --popover-foreground: 244 244 245;
-  --primary: 124 58 237;
+  --background: 3 16 24;      /* Dark Navy #031018 */
+  --foreground: 248 250 252;  /* Slate-White #F8FAFC */
+  --card: 6 26 41;            /* Navy Slate #061A29 */
+  --card-foreground: 248 250 252;
+  --popover: 6 26 41;
+  --popover-foreground: 248 250 252;
+  --primary: 37 99 235;       /* Electric Royal Blue #2563EB */
   --primary-foreground: 255 255 255;
-  --secondary: 79 70 229;
-  --secondary-foreground: 255 255 255;
-  --accent: 30 27 75;
-  --accent-foreground: 244 244 245;
+  --secondary: 15 32 46;
+  --secondary-foreground: 248 250 252;
+  --accent: 124 58 237;
+  --accent-foreground: 248 250 252;
   --success: 16 185 129;
   --success-foreground: 255 255 255;
-  --muted: 24 24 35;
-  --muted-foreground: 161 161 170;
-  --border: 24 24 35;
-  --input: 24 24 35;
-  --ring: 124 58 237;
-  --radius: 1rem;
+  --muted: 15 32 46;
+  --muted-foreground: 148 163 184;
+  --border: 20 35 50;
+  --input: 20 35 50;
+  --ring: 37 99 235;
+  --radius: 0.75rem;
 }
 
 @theme {
@@ -130,7 +130,7 @@ body {
 
 /* Premium background patterns */
 .grid-pattern {
-  background-image: radial-gradient(rgba(120, 120, 120, 0.08) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(180, 160, 130, 0.14) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
@@ -157,30 +157,38 @@ body {
   50% { transform: translate(60px, -60px) scale(0.88); opacity: 0.5; }
 }
 
-.animate-glow-left {
-  animation: float-glow-left 20s ease-in-out infinite;
-}
+.animate-glow-left { animation: glow-left 12s infinite ease-in-out; }
+.animate-glow-right { animation: glow-right 14s infinite ease-in-out; }
+.animate-glow-center { animation: glow-center 16s infinite ease-in-out; }
 
-.animate-glow-right {
-  animation: float-glow-right 24s ease-in-out infinite;
-}
-
-.animate-glow-center {
-  animation: float-glow-center 18s ease-in-out infinite;
-}
-
-/* Infinite marquee for reviews */
 @keyframes marquee {
-  0% { transform: translateX(0%); }
+  0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
 
 .animate-marquee {
-  display: flex;
-  width: max-content;
-  animation: marquee 40s linear infinite;
+  animation: marquee 30s linear infinite;
 }
 
-.animate-marquee:hover {
-  animation-play-state: paused;
+/* Custom textures */
+.carbon-texture {
+  background-color: rgb(11, 15, 25); /* Dark Midnight Blue */
+  background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 0);
+  background-size: 16px 16px;
 }
+.dark .carbon-texture {
+  background-color: rgb(11, 15, 25);
+  background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 0);
+}
+
+.luxury-card {
+  background: linear-gradient(135deg, rgba(17, 24, 39, 0.9) 0%, rgba(11, 15, 25, 0.98) 100%);
+  border: 1px solid rgba(31, 41, 55, 0.95);
+  box-shadow: 0 8px 25px -6px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+.dark .luxury-card {
+  background: linear-gradient(135deg, rgba(17, 24, 39, 0.9) 0%, rgba(11, 15, 25, 0.98) 100%);
+  border: 1px solid rgba(31, 41, 55, 0.95);
+  box-shadow: 0 8px 25px -6px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+

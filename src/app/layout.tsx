@@ -3,6 +3,8 @@ import { Geist, Geist_Mono, Outfit } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { CheckoutProvider } from "@/components/CheckoutContext";
+import { CartProvider } from "@/components/CartContext";
+import CartDrawer from "@/components/CartDrawer";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FloatingContacts from "@/components/FloatingContacts";
@@ -61,17 +63,21 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${outfit.variable} h-full scroll-smooth antialiased`}
       suppressHydrationWarning
+      data-scroll-behavior="smooth"
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <ThemeProvider>
-          <CheckoutProvider>
-            <Navbar />
-            <main className="flex-grow">{children}</main>
-            <Footer />
-            <FloatingContacts />
-            <StickyFooterCta />
-            <CheckoutModal />
-          </CheckoutProvider>
+          <CartProvider>
+            <CheckoutProvider>
+              <Navbar />
+              <main className="flex-grow">{children}</main>
+              <Footer />
+              <FloatingContacts />
+              <StickyFooterCta />
+              <CheckoutModal />
+              <CartDrawer />
+            </CheckoutProvider>
+          </CartProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -12,11 +12,11 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>('dark'); // Default to dark mode for the premium dark dashboard layout
+  const [theme, setTheme] = useState<Theme>('dark'); // Default to premium dark midnight mode
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') as Theme | null;
-    let activeTheme: Theme = 'dark'; // Always default to dark mode
+    let activeTheme: Theme = 'dark'; // Default to dark mode
     if (savedTheme) {
       activeTheme = savedTheme;
     }
