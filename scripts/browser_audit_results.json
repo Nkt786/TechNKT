@@ -1,0 +1,153 @@
+{
+  "allAssetRequestsCount": 695,
+  "failedRequests": [
+    {
+      "url": "14692.19",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "url": "14692.85",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "url": "http://localhost:4321/images/shop-categories/subscriptions.jpg",
+      "status": "DOM naturalWidth === 0"
+    },
+    {
+      "url": "http://localhost:4321/images/shop-categories/combo-packs.jpg",
+      "status": "DOM naturalWidth === 0"
+    },
+    {
+      "url": "http://localhost:4321/images/shop-categories/software.jpg",
+      "status": "DOM naturalWidth === 0"
+    },
+    {
+      "url": "http://localhost:4321/images/shop-categories/music.jpg",
+      "status": "DOM naturalWidth === 0"
+    },
+    {
+      "url": "http://localhost:4321/images/ebooks/ai-automation-mastery.jpg",
+      "status": "DOM naturalWidth === 0"
+    },
+    {
+      "url": "14692.111",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "url": "14692.187",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "url": "http://localhost:4321/images/ebooks/ai-automation-mastery.jpg",
+      "status": "DOM naturalWidth === 0"
+    },
+    {
+      "url": "14692.238",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "url": "14692.284",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "url": "14692.333",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "url": "14692.380",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "url": "14692.429",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "url": "14692.485",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "url": "http://localhost:4321/_image?href=%2F%40fs%2FC%3A%2FUsers%2Fnikhi%2FDesktop%2Fautomark-astro-main%2Fpublic%2Fimages%2Ftechnkt-hero-visual.jpg%3ForigWidth%3D1376%26origHeight%3D768%26origFormat%3Djpg&w=1376&h=768&f=webp&fit=contain",
+      "status": "DOM naturalWidth === 0"
+    },
+    {
+      "url": "http://localhost:4321/_image?href=%2F%40fs%2FC%3A%2FUsers%2Fnikhi%2FDesktop%2Fautomark-astro-main%2Fpublic%2Fimages%2Ficons%2Fresult-driven.svg%3ForigWidth%3D28%26origHeight%3D28%26origFormat%3Dsvg&w=28&h=28&f=svg&fit=contain",
+      "status": "DOM naturalWidth === 0"
+    },
+    {
+      "url": "http://localhost:4321/_image?href=%2F%40fs%2FC%3A%2FUsers%2Fnikhi%2FDesktop%2Fautomark-astro-main%2Fpublic%2Fimages%2Ficons%2Fmembership.svg%3ForigWidth%3D28%26origHeight%3D28%26origFormat%3Dsvg&w=28&h=28&f=svg&fit=contain",
+      "status": "DOM naturalWidth === 0"
+    },
+    {
+      "url": "http://localhost:4321/_image?href=%2F%40fs%2FC%3A%2FUsers%2Fnikhi%2FDesktop%2Fautomark-astro-main%2Fpublic%2Fimages%2Ficons%2Fcollaboration.svg%3ForigWidth%3D28%26origHeight%3D28%26origFormat%3Dsvg&w=28&h=28&f=svg&fit=contain",
+      "status": "DOM naturalWidth === 0"
+    },
+    {
+      "url": "http://localhost:4321/_image?href=%2F%40fs%2FC%3A%2FUsers%2Fnikhi%2FDesktop%2Fautomark-astro-main%2Fpublic%2Fimages%2Ficons%2Finnovation.svg%3ForigWidth%3D28%26origHeight%3D28%26origFormat%3Dsvg&w=28&h=28&f=svg&fit=contain",
+      "status": "DOM naturalWidth === 0"
+    },
+    {
+      "url": "http://localhost:4321/_image?href=%2F%40fs%2FC%3A%2FUsers%2Fnikhi%2FDesktop%2Fautomark-astro-main%2Fpublic%2Fimages%2Ficons%2Fsecurity.svg%3ForigWidth%3D28%26origHeight%3D28%26origFormat%3Dsvg&w=28&h=28&f=svg&fit=contain",
+      "status": "DOM naturalWidth === 0"
+    },
+    {
+      "url": "http://localhost:4321/_image?href=%2F%40fs%2FC%3A%2FUsers%2Fnikhi%2FDesktop%2Fautomark-astro-main%2Fpublic%2Fimages%2Ficons%2Fcreativity.svg%3ForigWidth%3D28%26origHeight%3D28%26origFormat%3Dsvg&w=28&h=28&f=svg&fit=contain",
+      "status": "DOM naturalWidth === 0"
+    },
+    {
+      "url": "14692.534",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "url": "14692.601",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "url": "14692.636",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "url": "14692.682",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "url": "14692.730",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "url": "14692.776",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "url": "14692.825",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "url": "14692.870",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "url": "14692.918",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "url": "14692.982",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "url": "14692.1046",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "url": "14692.1126",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "url": "14692.1187",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "url": "14692.1270",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    }
+  ]
+}

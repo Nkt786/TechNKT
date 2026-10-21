@@ -1,0 +1,377 @@
+{
+  "deletedCount": 73,
+  "deletedBytes": 11979736,
+  "deletedRecords": [
+    {
+      "path": "public/images/about_hero.png",
+      "size": 397075,
+      "reason": "Abandoned original Automark template mockup images; unreferenced"
+    },
+    {
+      "path": "public/images/automark_dashboard.png",
+      "size": 73689,
+      "reason": "Abandoned original Automark template mockup images; unreferenced"
+    },
+    {
+      "path": "public/images/avatar-lg.png",
+      "size": 295943,
+      "reason": "Abandoned original Automark template mockup images; unreferenced"
+    },
+    {
+      "path": "public/images/avatar-sm.png",
+      "size": 4005,
+      "reason": "Abandoned original Automark template mockup images; unreferenced"
+    },
+    {
+      "path": "public/images/badge-stars.svg",
+      "size": 1935,
+      "reason": "Obsolete Automark template UI icons; unreferenced"
+    },
+    {
+      "path": "public/images/blog-single/author-courtney.png",
+      "size": 5592,
+      "reason": "Abandoned template blog-single mockup images; active blog posts use public/images/blog/"
+    },
+    {
+      "path": "public/images/blog-single/author-leslie.png",
+      "size": 5536,
+      "reason": "Abandoned template blog-single mockup images; active blog posts use public/images/blog/"
+    },
+    {
+      "path": "public/images/blog-single/author-savannah.png",
+      "size": 5981,
+      "reason": "Abandoned template blog-single mockup images; active blog posts use public/images/blog/"
+    },
+    {
+      "path": "public/images/blog-single/hero-cover.png",
+      "size": 165249,
+      "reason": "Abandoned template blog-single mockup images; active blog posts use public/images/blog/"
+    },
+    {
+      "path": "public/images/blog-single/hybrid-cover.png",
+      "size": 197477,
+      "reason": "Abandoned template blog-single mockup images; active blog posts use public/images/blog/"
+    },
+    {
+      "path": "public/images/blog-single/objective-left.png",
+      "size": 175379,
+      "reason": "Abandoned template blog-single mockup images; active blog posts use public/images/blog/"
+    },
+    {
+      "path": "public/images/blog-single/objective-right.png",
+      "size": 342052,
+      "reason": "Abandoned template blog-single mockup images; active blog posts use public/images/blog/"
+    },
+    {
+      "path": "public/images/blog-single/read-more-1.png",
+      "size": 293133,
+      "reason": "Abandoned template blog-single mockup images; active blog posts use public/images/blog/"
+    },
+    {
+      "path": "public/images/blog-single/read-more-2.png",
+      "size": 102506,
+      "reason": "Abandoned template blog-single mockup images; active blog posts use public/images/blog/"
+    },
+    {
+      "path": "public/images/blog-single/read-more-3.png",
+      "size": 115346,
+      "reason": "Abandoned template blog-single mockup images; active blog posts use public/images/blog/"
+    },
+    {
+      "path": "public/images/brands/hubspot-logo-svg-150.svg",
+      "size": 5629,
+      "reason": "Unused template brand logos; case studies use dropbox and pingdom"
+    },
+    {
+      "path": "public/images/brands/livechat-logo-svg-150px.svg",
+      "size": 3734,
+      "reason": "Unused template brand logos; case studies use dropbox and pingdom"
+    },
+    {
+      "path": "public/images/brands/scapic-logo-svg-150px.svg",
+      "size": 4677,
+      "reason": "Unused template brand logos; case studies use dropbox and pingdom"
+    },
+    {
+      "path": "public/images/brands-group-1.png",
+      "size": 19315,
+      "reason": "Abandoned template partner brand cluster PNGs; unreferenced"
+    },
+    {
+      "path": "public/images/brands-group-2.png",
+      "size": 22304,
+      "reason": "Abandoned template partner brand cluster PNGs; unreferenced"
+    },
+    {
+      "path": "public/images/brands-group-3.png",
+      "size": 14164,
+      "reason": "Abandoned template partner brand cluster PNGs; unreferenced"
+    },
+    {
+      "path": "public/images/brands-group-4.png",
+      "size": 14544,
+      "reason": "Abandoned template partner brand cluster PNGs; unreferenced"
+    },
+    {
+      "path": "public/images/brands-group-5.png",
+      "size": 12533,
+      "reason": "Abandoned template partner brand cluster PNGs; unreferenced"
+    },
+    {
+      "path": "public/images/cross-icon.svg",
+      "size": 947,
+      "reason": "Obsolete Automark template UI icons; unreferenced"
+    },
+    {
+      "path": "public/images/ebook.png",
+      "size": 114351,
+      "reason": "Old template ebook graphic; active ebooks are in public/images/ebooks/"
+    },
+    {
+      "path": "public/images/favicon.png",
+      "size": 1283,
+      "reason": "Old template favicon PNG; site uses technkt-icon.png"
+    },
+    {
+      "path": "public/images/featured-video-thumbnail.png",
+      "size": 88131,
+      "reason": "Abandoned original Automark template mockup images; unreferenced"
+    },
+    {
+      "path": "public/images/features/dashboard-mockup.png",
+      "size": 106434,
+      "reason": "Unused feature dashboard mockup PNG"
+    },
+    {
+      "path": "public/images/features-menu-icon.svg",
+      "size": 3727,
+      "reason": "Obsolete Automark template UI icons; unreferenced"
+    },
+    {
+      "path": "public/images/feedback-icon.svg",
+      "size": 246,
+      "reason": "Obsolete Automark template UI icons; unreferenced"
+    },
+    {
+      "path": "public/images/green-tick.svg",
+      "size": 743,
+      "reason": "Source SVG already embedded as inline base64 in components.css"
+    },
+    {
+      "path": "public/images/hero-laptop-floodfilled.webp",
+      "size": 75388,
+      "reason": "Intermediate hero laptop warp generation files; active site uses hero-laptop-screen.webp"
+    },
+    {
+      "path": "public/images/hero-laptop-isolated.webp",
+      "size": 102810,
+      "reason": "Intermediate hero laptop warp generation files; active site uses hero-laptop-screen.webp"
+    },
+    {
+      "path": "public/images/hero-laptop-warped.webp",
+      "size": 83066,
+      "reason": "Intermediate hero laptop warp generation files; active site uses hero-laptop-screen.webp"
+    },
+    {
+      "path": "public/images/hero-laptop.webp",
+      "size": 75388,
+      "reason": "Intermediate hero laptop warp generation files; active site uses hero-laptop-screen.webp"
+    },
+    {
+      "path": "public/images/icons/starred-folder.svg",
+      "size": 3368,
+      "reason": "Unused icon in icons folder; not referenced in any markdown or component"
+    },
+    {
+      "path": "public/images/integrations/airtable.png",
+      "size": 1677,
+      "reason": "Abandoned template integrations PNG icons; active integrations use React icons"
+    },
+    {
+      "path": "public/images/integrations/asana.png",
+      "size": 5792,
+      "reason": "Abandoned template integrations PNG icons; active integrations use React icons"
+    },
+    {
+      "path": "public/images/integrations/fastapi.png",
+      "size": 1885,
+      "reason": "Abandoned template integrations PNG icons; active integrations use React icons"
+    },
+    {
+      "path": "public/images/integrations/mailchimp.png",
+      "size": 8124,
+      "reason": "Abandoned template integrations PNG icons; active integrations use React icons"
+    },
+    {
+      "path": "public/images/integrations/slack.png",
+      "size": 4422,
+      "reason": "Abandoned template integrations PNG icons; active integrations use React icons"
+    },
+    {
+      "path": "public/images/integrations/snapchat.png",
+      "size": 2399,
+      "reason": "Abandoned template integrations PNG icons; active integrations use React icons"
+    },
+    {
+      "path": "public/images/integrations/youtube.png",
+      "size": 1058,
+      "reason": "Abandoned template integrations PNG icons; active integrations use React icons"
+    },
+    {
+      "path": "public/images/integrations/zendesk.png",
+      "size": 1381,
+      "reason": "Abandoned template integrations PNG icons; active integrations use React icons"
+    },
+    {
+      "path": "public/images/media_1792180877156.png",
+      "size": 19358,
+      "reason": "Old test screenshots and untitled design exports; unreferenced"
+    },
+    {
+      "path": "public/images/media_1792180907823.png",
+      "size": 84210,
+      "reason": "Old test screenshots and untitled design exports; unreferenced"
+    },
+    {
+      "path": "public/images/nkt-example.webp",
+      "size": 186200,
+      "reason": "Old test screenshots and untitled design exports; unreferenced"
+    },
+    {
+      "path": "public/images/peoples/Profile Image-1.png",
+      "size": 107556,
+      "reason": "Abandoned template stock avatars from Automark template; unreferenced"
+    },
+    {
+      "path": "public/images/peoples/Profile Image-2.png",
+      "size": 98011,
+      "reason": "Abandoned template stock avatars from Automark template; unreferenced"
+    },
+    {
+      "path": "public/images/peoples/Profile Image-3.png",
+      "size": 107094,
+      "reason": "Abandoned template stock avatars from Automark template; unreferenced"
+    },
+    {
+      "path": "public/images/peoples/Profile Image.png",
+      "size": 88848,
+      "reason": "Abandoned template stock avatars from Automark template; unreferenced"
+    },
+    {
+      "path": "public/images/platforms-logo/intercom.svg",
+      "size": 1877,
+      "reason": "Unused comparison row SVGs; comparison-row.md uses other 20 logos"
+    },
+    {
+      "path": "public/images/platforms-logo/mailchimp.svg",
+      "size": 6632,
+      "reason": "Unused comparison row SVGs; comparison-row.md uses other 20 logos"
+    },
+    {
+      "path": "public/images/pricing-tick.svg",
+      "size": 535,
+      "reason": "Obsolete Automark template UI icons; unreferenced"
+    },
+    {
+      "path": "public/images/pricing-untick.png",
+      "size": 362,
+      "reason": "Obsolete Automark template UI icons; unreferenced"
+    },
+    {
+      "path": "public/images/shop-categories/adult.jpg",
+      "size": 526059,
+      "reason": "Unused shop category image; not in product catalogue or shop plans"
+    },
+    {
+      "path": "public/images/star-vector.svg",
+      "size": 382,
+      "reason": "Source SVG already embedded as inline base64 in components.css"
+    },
+    {
+      "path": "public/images/technkt-logo.png",
+      "size": 68028,
+      "reason": "Obsolete raster logo export; site uses SVG logo and technkt-icon.png"
+    },
+    {
+      "path": "public/images/technkt-real-products.webp",
+      "size": 120138,
+      "reason": "Temporary screenshot capture files used during screen warping; unreferenced"
+    },
+    {
+      "path": "public/images/technkt-real-store.webp",
+      "size": 94526,
+      "reason": "Temporary screenshot capture files used during screen warping; unreferenced"
+    },
+    {
+      "path": "public/images/untitled-14.png",
+      "size": 1064657,
+      "reason": "Old test screenshots and untitled design exports; unreferenced"
+    },
+    {
+      "path": "public/images/value-proposition/values-icon-1.svg",
+      "size": 3031,
+      "reason": "Abandoned template value proposition SVGs; TechNKT uses /images/icons/"
+    },
+    {
+      "path": "public/images/value-proposition/values-icon-2.svg",
+      "size": 2337,
+      "reason": "Abandoned template value proposition SVGs; TechNKT uses /images/icons/"
+    },
+    {
+      "path": "public/images/value-proposition/values-icon-3.svg",
+      "size": 1766,
+      "reason": "Abandoned template value proposition SVGs; TechNKT uses /images/icons/"
+    },
+    {
+      "path": "public/images/value-proposition/values-icon-4.svg",
+      "size": 945,
+      "reason": "Abandoned template value proposition SVGs; TechNKT uses /images/icons/"
+    },
+    {
+      "path": "test_a_desktop_initial.png",
+      "size": 981833,
+      "reason": "Temporary visual testing screenshot saved in project root"
+    },
+    {
+      "path": "test_b_desktop_rot90.png",
+      "size": 998988,
+      "reason": "Temporary visual testing screenshot saved in project root"
+    },
+    {
+      "path": "test_c_desktop_rot180.png",
+      "size": 1007074,
+      "reason": "Temporary visual testing screenshot saved in project root"
+    },
+    {
+      "path": "test_d_desktop_rot270.png",
+      "size": 984109,
+      "reason": "Temporary visual testing screenshot saved in project root"
+    },
+    {
+      "path": "test_f_drag_interaction.png",
+      "size": 1011369,
+      "reason": "Temporary visual testing screenshot saved in project root"
+    },
+    {
+      "path": "test_g_mobile_375.png",
+      "size": 195996,
+      "reason": "Temporary visual testing screenshot saved in project root"
+    },
+    {
+      "path": "test_g_mobile_430.png",
+      "size": 506421,
+      "reason": "Temporary visual testing screenshot saved in project root"
+    },
+    {
+      "path": "test_g_tablet_820.png",
+      "size": 750976,
+      "reason": "Temporary visual testing screenshot saved in project root"
+    }
+  ],
+  "removedDirs": [
+    "public/images/blog-single",
+    "public/images/peoples",
+    "public/images/integrations",
+    "public/images/value-proposition"
+  ]
+}
