@@ -1,0 +1,18 @@
+---
+import Base from "@/layouts/Base.astro";
+import StoreCatalog from "@/layouts/components/StoreCatalog";
+
+const pageData = {
+  title: "Store — Digital Products & Subscriptions",
+  meta_title: "Store — Digital Products & Subscriptions | TechNKT",
+  description: "Browse verified digital subscriptions, 4K streaming passes, AI software tools, and combo packs with instant delivery.",
+};
+---
+
+<Base {...pageData}>
+  <section class="pt-20 sm:pt-24 lg:pt-28 pb-20">
+    <div class="container">
+      <StoreCatalog client:load />
+    </div>
+  </section>
+</Base>

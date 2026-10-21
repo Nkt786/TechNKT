@@ -1,0 +1,10 @@
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Back Box -->
+  <rect x="14" y="6" width="20" height="20" rx="3.5" fill="#151D2B" stroke="#3D4B60" stroke-width="1.5"/>
+  <line x1="24" y1="6" x2="24" y2="26" stroke="#2965E8" stroke-width="1.5"/>
+  <!-- Front Box -->
+  <rect x="6" y="14" width="20" height="20" rx="3.5" fill="#202B3A" stroke="#2965E8" stroke-width="1.5"/>
+  <line x1="16" y1="14" x2="16" y2="34" stroke="#2965E8" stroke-width="2"/>
+  <line x1="6" y1="24" x2="26" y2="24" stroke="#2965E8" stroke-width="2"/>
+  <circle cx="16" cy="24" r="2.5" fill="#3D75F0"/>
+</svg>

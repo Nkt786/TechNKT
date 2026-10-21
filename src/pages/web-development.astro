@@ -1,0 +1,205 @@
+---
+import Base from "@/layouts/Base.astro";
+import PageHeader from "@/layouts/components/PageHeader.astro";
+import {
+  LuShoppingCart,
+  LuBuilding2,
+  LuBriefcase,
+  LuUtensilsCrossed,
+  LuGraduationCap,
+  LuHouse,
+  LuCalendarCheck,
+  LuMousePointerClick,
+  LuLayers,
+  LuArrowRight,
+} from "react-icons/lu";
+
+const pageData = {
+  title: "Website Development Services",
+  meta_title: "Custom Website Development Studio - TechNKT",
+  description: "Modern, high-converting websites and web applications built with Next.js, Astro, React, and Tailwind CSS. Tailored for your business.",
+};
+
+const SERVICES = [
+  {
+    icon: LuShoppingCart,
+    title: "Ecommerce Websites",
+    description: "High-converting online stores built on Astro or Next.js with instant page transitions, smooth cart mechanics, UPI/Stripe checkout, and inventory tracking.",
+  },
+  {
+    icon: LuBuilding2,
+    title: "Business Websites",
+    description: "Professional digital front-doors for established businesses and agencies. Service packages, trust signals, clear value props, and direct lead capture.",
+  },
+  {
+    icon: LuBriefcase,
+    title: "Portfolio Websites",
+    description: "Distinctive, editorial personal websites for founders, developers, designers, and creators that make an unforgettable first impression.",
+  },
+  {
+    icon: LuUtensilsCrossed,
+    title: "Restaurant & Cafe Websites",
+    description: "Digital menus with high-res imagery, table reservation forms, opening hours, Google Maps directions, and direct WhatsApp ordering.",
+  },
+  {
+    icon: LuGraduationCap,
+    title: "Education & Coaching Websites",
+    description: "Course overviews, student registration forms, lecture schedules, and parent inquiry workflows for tutors, academies, and institutes.",
+  },
+  {
+    icon: LuHouse,
+    title: "Real Estate Websites",
+    description: "Property showcase catalogues with amenity lists, floor plans, location highlights, and instant inquiry forms for property developers and brokers.",
+  },
+  {
+    icon: LuCalendarCheck,
+    title: "Booking & Appointment Websites",
+    description: "Self-serve calendar booking for clinics, consulting firms, salons, and local professionals with automated email/WhatsApp reminders.",
+  },
+  {
+    icon: LuMousePointerClick,
+    title: "High-Converting Landing Pages",
+    description: "Laser-focused single-page funnels engineered for paid Google/Meta ads. Sub-second load times with persuasive copywriting and friction-free CTAs.",
+  },
+  {
+    icon: LuLayers,
+    title: "Custom Web Applications",
+    description: "Tailor-made portals, analytics dashboards, client management systems, and specialized workflow tools built precisely for your operations.",
+  },
+];
+
+const PROCESS_STEPS = [
+  {
+    num: "01",
+    title: "Clarify & Plan",
+    hindi: "Pehle baat kar lo.",
+    desc: "We discuss your exact business objectives, preferred design aesthetic, required features, and launch timeline. No vague promises.",
+  },
+  {
+    num: "02",
+    title: "Wireframe & Design",
+    hindi: "Design confirm karo.",
+    desc: "We craft an intentional, responsive UI layout tailored to your brand. You review and approve the look and feel before coding begins.",
+  },
+  {
+    num: "03",
+    title: "Modern Engineering",
+    hindi: "Clean code & speed.",
+    desc: "Built with modern frameworks (Astro, Next.js, React, Tailwind). No bloated page-builders or slow plugins that drag your Google Lighthouse score down.",
+  },
+  {
+    num: "04",
+    title: "Launch & Ownership",
+    hindi: "Live and ready.",
+    desc: "We connect your custom domain, set up analytics and SEO metadata, conduct cross-device testing, and hand over 100% full ownership of the code.",
+  },
+];
+---
+
+<Base {...pageData}>
+  <PageHeader
+    title="Website Development Studio"
+    subtitle="We build websites that mean business. Fast, responsive, and thoughtfully designed with modern frameworks. Aapka idea, hamara code."
+  />
+
+  <!-- Showcase Visual Banner -->
+  <section class="pt-4 sm:pt-6 pb-12 sm:pb-16 relative">
+    <div class="container relative">
+      <div class="pointer-events-none absolute -inset-4 -z-10 rounded-3xl opacity-40 blur-3xl bg-radial from-[#2965E8]/20 via-[#151D2B]/40 to-transparent"></div>
+      <div class="rounded-2xl sm:rounded-3xl overflow-hidden border border-[#1E2837] bg-[#151D2B] p-1.5 sm:p-3 shadow-2xl group">
+        <img
+          src="/images/technkt-webdev-showcase.jpg"
+          alt="TechNKT Website Development Showcase"
+          class="w-full h-auto rounded-xl sm:rounded-2xl object-cover transition-transform duration-500 group-hover:scale-[1.01]"
+          loading="eager"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 Services Grid -->
+  <section class="section" id="services">
+    <div class="container">
+      <div class="mb-14 text-center max-w-2xl mx-auto">
+        <span class="text-xs uppercase tracking-wider text-primary font-semibold block mb-2">Our Capabilities</span>
+        <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">Built Specifically for Your Industry</h2>
+        <p class="text-text-dark text-sm sm:text-base leading-relaxed">
+          From focused landing pages to full-scale ecommerce solutions, we engineer every build from scratch with clean code and zero template leftovers.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {
+          SERVICES.map((s) => {
+            const IconComp = s.icon;
+            return (
+              <div class="p-8 rounded-2xl bg-light border border-border hover:border-primary/40 transition-all duration-300 flex flex-col justify-between group">
+                <div>
+                  <div class="size-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary mb-6 transition-transform group-hover:scale-105">
+                    <IconComp className="size-6" />
+                  </div>
+                  <h3 class="text-xl font-bold text-white mb-3">{s.title}</h3>
+                  <p class="text-sm text-text-dark leading-relaxed mb-6">{s.description}</p>
+                </div>
+                <a
+                  href="/contact"
+                  class="inline-flex items-center gap-2 text-xs font-semibold text-primary group-hover:text-white transition-colors"
+                >
+                  <span>Inquire About This Service</span>
+                  <LuArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
+                </a>
+              </div>
+            );
+          })
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Process Section -->
+  <section class="section pt-0">
+    <div class="container">
+      <div class="p-8 sm:p-14 rounded-3xl bg-light border border-border">
+        <div class="mb-12 text-center max-w-xl mx-auto">
+          <span class="text-xs uppercase tracking-wider text-primary font-semibold block mb-2">How We Work</span>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">Straightforward 4-Step Process</h2>
+          <p class="text-text-dark text-sm">No confusing jargon. Just transparent milestones from discussion to deployment.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {
+            PROCESS_STEPS.map((step) => (
+              <div class="relative flex flex-col">
+                <span class="text-4xl font-extrabold text-white/10 mb-2 font-secondary">{step.num}</span>
+                <h4 class="text-lg font-bold text-white mb-1">{step.title}</h4>
+                <span class="text-xs text-primary font-hindi mb-3 block">{step.hindi}</span>
+                <p class="text-sm text-text-dark leading-relaxed">{step.desc}</p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Box -->
+  <section class="section pt-0 pb-20">
+    <div class="container">
+      <div class="rounded-3xl p-8 sm:p-14 bg-gradient-to-r from-light via-[#161a29] to-light border border-border text-center max-w-4xl mx-auto">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-4">Have a Project in Mind? Let's Talk.</h2>
+        <p class="text-sm sm:text-base text-text-dark max-w-xl mx-auto mb-8 leading-relaxed">
+          Tell us about what you want to build. We'll give you honest feedback on technical choices, a transparent price quote, and a realistic timeframe.
+        </p>
+        <div class="flex flex-wrap gap-4 justify-center items-center">
+          <a href="/contact" class="btn btn-primary">
+            <span>Start a Conversation</span>
+            <LuArrowRight className="size-4 ml-2" />
+          </a>
+          <a href="/shop" class="btn btn-outline">
+            Explore Digital Store
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

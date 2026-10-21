@@ -1,0 +1,255 @@
+---
+import Base from "@/layouts/Base.astro";
+import ProductCards from "@/layouts/components/ProductCards";
+import BusinessNeeds from "@/layouts/components/BusinessNeeds.astro";
+import CustomerReviewsCarousel from "@/layouts/components/CustomerReviewsCarousel";
+import { customerReviews } from "@/data/reviews";
+import OurStory from "@/layouts/components/OurStory.astro";
+import Faq from "@/layouts/components/Faq.astro";
+import EbooksShowcase from "@/layouts/components/EbooksShowcase";
+import ShopByPlan from "@/layouts/components/ShopByPlan";
+import { getListPage } from "@/lib/contentParser.astro";
+import { markdownify } from "@/lib/utils/textConverter";
+import Features from "@/partials/Features.astro";
+import CallToAction from "@/partials/CallToAction.astro";
+import type { Homepage } from "@/types";
+import {
+  LuArrowRight,
+  LuShieldCheck,
+  LuZap,
+  LuHeadphones,
+} from "react-icons/lu";
+import HeroVisual from "@/layouts/components/HeroVisual";
+
+const homepage = await getListPage("homepage", "-index");
+const homepageData: Homepage = homepage.data;
+---
+
+<Base>
+  <!-- Hero Section (Left-Aligned, Asymmetrical, Solid Colors, No Gradient Text) -->
+  <section class="relative pt-28 pb-16 lg:pt-36 lg:pb-24 overflow-hidden border-b border-[#1E2837] bg-[#0B101A]">
+    <!-- Subtle Slate-Blue Ambient Illumination Behind Hero (Zero Cheap Glow) -->
+    <div
+      class="pointer-events-none absolute inset-0 -z-10"
+      style="background: radial-gradient(ellipse 90% 60% at 50% -10%, rgba(41, 101, 232, 0.14) 0%, rgba(21, 29, 43, 0.4) 45%, transparent 80%);"
+    ></div>
+    <div class="container relative z-10">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+        
+        <!-- Left Hero Content (6 Columns on Desktop) -->
+        <div class="lg:col-span-6 text-left">
+          
+          <!-- Brand Kicker -->
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-white/[0.04] border border-[#1E2837] mb-6 text-xs font-semibold text-[#F4F6FA] tracking-wide uppercase">
+            <span class="size-2 rounded-full bg-[#2965E8] animate-pulse"></span>
+            <span>Digital Products &amp; Web Studio • TechNKT</span>
+          </div>
+
+          <!-- Main Hero Headline - Flat, Solid Typography (No AI Gradients) -->
+          <h1 class="text-4xl sm:text-5xl lg:text-[54px] font-extrabold text-[#F4F6FA] tracking-tight leading-[1.08] mb-6 font-secondary">
+            Everything Digital.
+            <span class="block text-primary mt-1">Carefully Chosen.</span>
+          </h1>
+
+          <!-- Supporting Subtitle -->
+          <p class="text-base sm:text-lg text-text-dark max-w-xl leading-relaxed mb-8 font-normal">
+            {homepageData.banner.content}
+          </p>
+
+          <!-- Focused Action CTAs (Clean, No Pill Gimmicks) -->
+          <div class="flex flex-wrap items-center gap-4 mb-10">
+            <a href="/shop" class="btn btn-primary text-sm sm:text-base px-7 py-3.5">
+              <span>Explore Store</span>
+              <LuArrowRight className="size-4 ml-2" />
+            </a>
+            <a href="/web-development" class="btn btn-outline text-sm sm:text-base px-7 py-3.5">
+              <span>View Website Services</span>
+            </a>
+          </div>
+
+          <!-- Verified Value Strip (Clean, Authentic, Factual) -->
+          <div class="pt-6 border-t border-border flex flex-wrap items-center gap-6 sm:gap-8 text-xs sm:text-sm text-text-dark">
+            <div class="flex items-center gap-2">
+              <LuZap className="size-4 text-primary shrink-0" />
+              <span>Fast Digital Access</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <LuShieldCheck className="size-4 text-primary shrink-0" />
+              <span>Replacement Support on Plans</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <LuHeadphones className="size-4 text-primary shrink-0" />
+              <span>Order Support via WhatsApp</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Hero Visual (6 Columns on Desktop) - Art-Directed Cinematic HeroVisual Composition -->
+        <div class="lg:col-span-6 relative mt-6 lg:mt-0 flex items-center justify-center">
+          <HeroVisual client:load />
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Image-Led Section ("Break the Template" / "Icons Out, Images In") -->
+  <section class="py-12 border-b border-border bg-light/30">
+    <div class="container">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+        <div>
+          <span class="text-xs uppercase tracking-wider text-primary font-semibold block mb-1">Featured Essentials</span>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white">Direct Access, Zero Guesswork</h2>
+        </div>
+        <p class="text-xs sm:text-sm text-text-dark max-w-md">
+          Real products and real deliverables. No generic icon boxes, no fake promises.
+        </p>
+      </div>
+
+      <!-- 3 Real Image-Led Preview Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Card 1: Streaming Subscriptions -->
+        <a href="/shop?category=subscriptions" class="group rounded-2xl border border-border bg-light overflow-hidden hover:border-primary/40 transition-all duration-200 flex flex-col justify-between">
+          <div class="aspect-[16/10] overflow-hidden bg-black/40 relative">
+            <img
+              src="/images/products/netflix.jpg"
+              alt="Netflix Premium 4K Pass"
+              class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-black/80 backdrop-blur-md text-white text-[11px] font-semibold border border-white/10">
+              Streaming Passes
+            </span>
+          </div>
+          <div class="p-6">
+            <h3 class="text-lg font-bold text-white mb-2 group-hover:text-primary transition-colors">
+              Premium Entertainment Subscriptions
+            </h3>
+            <p class="text-xs sm:text-sm text-text-dark leading-relaxed mb-4">
+              Private 4K UHD profiles with dedicated PINs for Netflix, Prime Video, and YouTube Premium.
+            </p>
+            <span class="text-xs font-semibold text-primary inline-flex items-center gap-1">
+              Explore Subscriptions <LuArrowRight className="size-3 transition-transform group-hover:translate-x-1" />
+            </span>
+          </div>
+        </a>
+
+        <!-- Card 2: Curated Ebooks -->
+        <a href="/ebook" class="group rounded-2xl border border-border bg-light overflow-hidden hover:border-primary/40 transition-all duration-200 flex flex-col justify-between">
+          <div class="aspect-[16/10] overflow-hidden bg-black/40 relative">
+            <img
+              src="/images/ebooks/digital-business-blueprint.jpg"
+              alt="Digital Business Blueprint Ebook"
+              class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-black/80 backdrop-blur-md text-white text-[11px] font-semibold border border-white/10">
+              Digital Ebooks
+            </span>
+          </div>
+          <div class="p-6">
+            <h3 class="text-lg font-bold text-white mb-2 group-hover:text-primary transition-colors">
+              Battle-Tested Business Blueprints
+            </h3>
+            <p class="text-xs sm:text-sm text-text-dark leading-relaxed mb-4">
+              Step-by-step playbooks covering digital commerce, AI workflows, and automation templates.
+            </p>
+            <span class="text-xs font-semibold text-primary inline-flex items-center gap-1">
+              Browse Ebooks <LuArrowRight className="size-3 transition-transform group-hover:translate-x-1" />
+            </span>
+          </div>
+        </a>
+
+        <!-- Card 3: Custom Website Studio -->
+        <a href="/web-development" class="group rounded-2xl border border-border bg-light overflow-hidden hover:border-primary/40 transition-all duration-200 flex flex-col justify-between">
+          <div class="aspect-[16/10] overflow-hidden bg-black/40 relative">
+            <img
+              src="/images/technkt-webdev-showcase.jpg"
+              alt="Custom Website Development"
+              class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-black/80 backdrop-blur-md text-white text-[11px] font-semibold border border-white/10">
+              Web Studio
+            </span>
+          </div>
+          <div class="p-6">
+            <h3 class="text-lg font-bold text-white mb-2 group-hover:text-primary transition-colors">
+              Custom Modern Web Development
+            </h3>
+            <p class="text-xs sm:text-sm text-text-dark leading-relaxed mb-4">
+              High-converting ecommerce storefronts, business sites, and landing pages built with clean code.
+            </p>
+            <span class="text-xs font-semibold text-primary inline-flex items-center gap-1">
+              View Web Services <LuArrowRight className="size-3 transition-transform group-hover:translate-x-1" />
+            </span>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Trending Product Catalogue -->
+  <section class="section">
+    <div class="container">
+      <div class="mb-10 text-left">
+        <span class="text-xs uppercase tracking-wider text-primary font-semibold block mb-2">Marketplace Picks</span>
+        <h2 class="text-2xl sm:text-3xl font-bold text-white">Top Trending Passes</h2>
+        <p class="text-text-dark text-sm mt-1">Direct digital delivery with replacement support throughout your plan term.</p>
+      </div>
+      <ProductCards client:load />
+    </div>
+  </section>
+
+  <!-- Shop by Category / Plan Section -->
+  <section class="section pt-0 border-b border-border">
+    <div class="container">
+      <ShopByPlan client:load />
+    </div>
+  </section>
+
+  <!-- Ebooks Showcase -->
+  <EbooksShowcase client:load />
+
+  <!-- Website Development Services (9-Box Grid) -->
+  {
+    homepageData.our_features.enable && (
+      <Features our_features={homepageData.our_features} />
+    )
+  }
+
+  <!-- How It Works / Customer Journey (5 Simple Human Steps) -->
+  <BusinessNeeds />
+
+  <!-- Customer Reviews (Tasteful Social-Proof Invite - No Fake Reviews) -->
+  {
+    (homepageData.growth_process?.enable ?? true) && (
+      <section class="section pb-16 xl:pb-24 bg-transparent relative isolate overflow-hidden" id="customer-reviews">
+        <div class="container">
+          <div class="section-container">
+            <div class="section-intro centralize">
+              <h2
+                class="title"
+                set:html={markdownify(homepageData.growth_process?.title || "Real People. <strong>Real Experiences.</strong>")}
+              />
+              <p class="subtitle max-w-xl mx-auto">
+                <span class="font-hindi">{homepageData.growth_process?.subtitle || "Hum apni tareef khud nahi karenge... customers ko bolne do!"}</span>
+              </p>
+            </div>
+            <div class="section-content">
+              <CustomerReviewsCarousel client:visible reviews={customerReviews} />
+            </div>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- TechNKT Philosophy / CEO Letter Transformed -->
+  <OurStory />
+
+  <!-- Frequently Asked Questions -->
+  <Faq />
+
+  <!-- Final Call To Action Banner -->
+  <CallToAction />
+</Base>

@@ -1,0 +1,24 @@
+---
+import Base from "@/layouts/Base.astro";
+import PageHeader from "@/layouts/components/PageHeader.astro";
+import CartView from "@/layouts/components/CartView";
+
+const pageData = {
+  title: "Shopping Cart",
+  meta_title: "Shopping Cart - TechNKT",
+  description: "Review and manage your selected subscriptions, AI tools, and software keys.",
+};
+---
+
+<Base {...pageData}>
+  <PageHeader
+    title="Shopping Cart"
+    subtitle="Review your digital orders, subscriptions, and instant deliveries."
+  />
+
+  <section class="section pt-0">
+    <div class="container">
+      <CartView client:load />
+    </div>
+  </section>
+</Base>

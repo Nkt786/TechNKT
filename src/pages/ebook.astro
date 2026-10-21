@@ -1,0 +1,58 @@
+---
+import Base from "@/layouts/Base.astro";
+import PageHeader from "@/layouts/components/PageHeader.astro";
+import EbooksShowcase from "@/layouts/components/EbooksShowcase";
+import { LuBookOpen, LuDownload, LuSparkles } from "react-icons/lu";
+
+const pageData = {
+  title: "Curated Ebooks & Guides",
+  meta_title: "Curated Ebooks - TechNKT",
+  description: "Actionable digital business blueprints and AI automation guides designed for modern creators, builders, and entrepreneurs.",
+};
+---
+
+<Base {...pageData}>
+  <PageHeader
+    title="Curated Digital Ebooks"
+    subtitle="Actionable, no-fluff blueprints and playbooks. Designed to help you build, launch, and automate digital income streams."
+  />
+
+  <section class="section pt-0">
+    <div class="container">
+      <EbooksShowcase client:load />
+
+      <!-- What Makes Our Ebooks Different -->
+      <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="p-6 rounded-2xl bg-light border border-border">
+          <div class="size-11 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary mb-4">
+            <LuSparkles className="size-5" />
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">100% Practical Knowledge</h3>
+          <p class="text-sm text-text-dark leading-relaxed">
+            Zero generic theory or filler pages. Every chapter delivers concrete steps, battle-tested workflows, and real setups.
+          </p>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-light border border-border">
+          <div class="size-11 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary mb-4">
+            <LuDownload className="size-5" />
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Instant Download & Lifetime Access</h3>
+          <p class="text-sm text-text-dark leading-relaxed">
+            Download your files immediately upon payment. All future editions and updates are included at no additional cost.
+          </p>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-light border border-border">
+          <div class="size-11 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary mb-4">
+            <LuBookOpen className="size-5" />
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Resource Checklists Included</h3>
+          <p class="text-sm text-text-dark leading-relaxed">
+            Includes companion Notion templates, cheat sheets, and prompt libraries so you can execute without starting from scratch.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

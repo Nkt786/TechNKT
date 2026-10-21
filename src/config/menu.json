@@ -1,0 +1,97 @@
+{
+  "main": [
+    {
+      "name": "Home",
+      "url": "/"
+    },
+    {
+      "name": "Store",
+      "url": "/shop"
+    },
+    {
+      "name": "Ebooks",
+      "url": "/ebook"
+    },
+    {
+      "name": "Website Development",
+      "url": "/web-development"
+    },
+    {
+      "name": "About",
+      "url": "/about"
+    },
+    {
+      "name": "Contact",
+      "url": "/contact"
+    }
+  ],
+  "footer_col_1_title": "Digital Marketplace",
+  "footer_col_2_title": "Website Studio",
+  "footer_col_3_title": "Trust & Legal",
+  "footer_primary": [
+    {
+      "name": "Digital Store",
+      "url": "/shop"
+    },
+    {
+      "name": "Streaming Subscriptions",
+      "url": "/shop?category=subscriptions"
+    },
+    {
+      "name": "Combo Packs",
+      "url": "/shop?category=combo-packs"
+    },
+    {
+      "name": "AI Tools & Software",
+      "url": "/shop?category=software"
+    },
+    {
+      "name": "Curated Ebooks",
+      "url": "/ebook"
+    }
+  ],
+  "footer_resource": [
+    {
+      "name": "Website Development",
+      "url": "/web-development"
+    },
+    {
+      "name": "Ecommerce Websites",
+      "url": "/web-development#services"
+    },
+    {
+      "name": "Business Websites",
+      "url": "/web-development#services"
+    },
+    {
+      "name": "Landing Pages",
+      "url": "/web-development#services"
+    },
+    {
+      "name": "Custom Web Apps",
+      "url": "/web-development#services"
+    }
+  ],
+  "footer_legal": [
+    {
+      "name": "About TechNKT",
+      "url": "/about"
+    },
+    {
+      "name": "Contact & Support",
+      "url": "/contact"
+    },
+    {
+      "name": "Privacy Policy",
+      "url": "/privacy-policy"
+    },
+    {
+      "name": "Terms and Conditions",
+      "url": "/terms-and-conditions"
+    },
+    {
+      "name": "Refund Policy",
+      "url": "/refund-policy"
+    }
+  ]
+}

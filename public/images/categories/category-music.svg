@@ -1,0 +1,12 @@
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Headband -->
+  <path d="M10 21C10 14.5 14.5 9 20 9C25.5 9 30 14.5 30 21" stroke="#A6B1C2" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Left Ear Cup -->
+  <rect x="7" y="19" width="6" height="13" rx="3" fill="#202B3A" stroke="#2965E8" stroke-width="1.5"/>
+  <!-- Right Ear Cup -->
+  <rect x="27" y="19" width="6" height="13" rx="3" fill="#202B3A" stroke="#2965E8" stroke-width="1.5"/>
+  <!-- Soundwave dots -->
+  <line x1="17" y1="23" x2="17" y2="28" stroke="#3D75F0" stroke-width="2" stroke-linecap="round"/>
+  <line x1="20" y1="20" x2="20" y2="31" stroke="#2965E8" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="23" y1="23" x2="23" y2="28" stroke="#3D75F0" stroke-width="2" stroke-linecap="round"/>
+</svg>

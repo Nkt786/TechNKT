@@ -1,0 +1,91 @@
+---
+import Logo from "@/components/Logo.astro";
+import HeaderAccountCart from "@/layouts/components/HeaderAccountCart";
+import config from "@/config/config.json";
+import menu from "@/config/menu.json";
+
+export interface ChildNavigationLink {
+  name: string;
+  url: string;
+}
+
+export interface NavigationLink {
+  name: string;
+  url: string;
+  hasChildren?: boolean;
+  children?: ChildNavigationLink[];
+}
+
+const { main }: { main: NavigationLink[] } = menu;
+const { navigation_button, settings } = config;
+const { pathname } = Astro.url;
+---
+
+<header
+  class={`header z-50 w-full transition-all duration-300 bg-[#0B101A]/90 backdrop-blur-md border-b border-white/[0.06] ${settings.sticky_header ? "fixed top-0 left-0" : ""}`}
+>
+  <nav class="container flex flex-wrap items-center justify-between relative z-30">
+    <!-- Left: Brand Logo -->
+    <div class="flex items-center shrink-0">
+      <Logo />
+    </div>
+
+    <!-- Hidden Checkbox for Mobile Navigation Toggle (Direct Sibling for peer-checked selector) -->
+    <input id="nav-toggle" type="checkbox" class="peer hidden" />
+
+    <!-- Right: Header Action Controls (Cart on Mobile; Account + Cart on Desktop; Hamburger on Mobile) -->
+    <div class="flex items-center gap-2 sm:gap-2.5 shrink-0 order-2 lg:order-3">
+      <HeaderAccountCart client:load />
+
+      <!-- Navbar Toggler Button (Visible only on mobile/tablet) -->
+      <label
+        for="nav-toggle"
+        class="cursor-pointer flex items-center justify-center lg:hidden text-white bg-white/[0.04] hover:bg-white/[0.08] border border-border size-9 rounded-xl transition-colors shrink-0 select-none active:scale-95"
+        aria-label="Toggle Navigation Menu"
+      >
+        <svg
+          id="show-button"
+          class="h-4.5 w-4.5 fill-current block peer-checked:hidden"
+          viewBox="0 0 20 20"
+        >
+          <title>Menu Open</title>
+          <path d="M0 3h20v2H0V3z m0 6h20v2H0V9z m0 6h20v2H0V0z"></path>
+        </svg>
+        <svg
+          id="hide-button"
+          class="h-4.5 w-4.5 fill-current hidden peer-checked:block"
+          viewBox="0 0 20 20"
+        >
+          <title>Menu Close</title>
+          <polygon
+            points="11 9 22 9 22 11 11 11 11 22 9 22 9 11 -2 11 -2 9 9 9 9 -2 11 -2"
+            transform="rotate(45 10 10)"
+          ></polygon>
+        </svg>
+      </label>
+    </div>
+
+    <!-- Navigation Menu: Hidden on mobile unless peer-checked; Pill-bar on Desktop (lg >= 1024px) -->
+    <ul
+      id="nav-menu"
+      class="navbar-nav hidden peer-checked:flex peer-checked:flex-col lg:flex lg:flex-row items-stretch lg:items-center w-full max-lg:mt-3 lg:w-auto lg:gap-x-1 xl:gap-x-2 py-3 lg:py-1 px-4 lg:px-6 bg-[#0F1622]/98 lg:bg-[#151D2B]/80 border border-[#1E2837] backdrop-blur-xl rounded-2xl lg:rounded-full order-3 lg:order-2 shadow-2xl lg:shadow-none"
+    >
+      {
+        main.map((menu) => (
+          <li class="nav-item">
+            <a
+              href={menu.url}
+              class={`nav-link block text-sm font-medium py-2 px-3 rounded-xl transition-colors ${
+                (pathname === `${menu.url}/` || pathname === menu.url)
+                  ? "text-white bg-white/[0.08] lg:bg-transparent lg:text-primary font-semibold"
+                  : "text-[#A6B1C2] hover:text-white hover:bg-white/[0.04] lg:hover:bg-transparent lg:hover:text-primary"
+              }`}
+            >
+              {menu.name}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</header>

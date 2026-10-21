@@ -1,0 +1,56 @@
+---
+import ImageMod from "@/layouts/components/ImageMod.astro";
+import {
+  LuShoppingCart,
+  LuBuilding2,
+  LuBriefcaseBusiness,
+  LuUtensilsCrossed,
+  LuGraduationCap,
+  LuHousePlus,
+  LuCalendarCheck,
+  LuMousePointerClick,
+  LuPanelsTopLeft,
+} from "react-icons/lu";
+
+interface Props {
+  logo?: string;
+  icon?: string;
+  title: string;
+  description?: string;
+  is_starred: boolean;
+}
+
+const { logo, icon, title, description, is_starred } = Astro.props;
+---
+
+<div
+  class="p-8 xl:px-10 xl:py-11 border-t border-l border-border relative group transition-colors duration-200 hover:bg-white/[0.02] flex flex-col items-center text-center justify-start min-h-[250px]"
+>
+  <!-- Icon -->
+  <div
+    class="mb-6 mx-auto size-12 rounded-xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center transition-transform duration-300 group-hover:scale-105"
+  >
+    {icon === "shopping-cart" && <LuShoppingCart className="size-6 stroke-[1.75]" />}
+    {icon === "building-2" && <LuBuilding2 className="size-6 stroke-[1.75]" />}
+    {icon === "portfolio" && <LuBriefcaseBusiness className="size-6 stroke-[1.75]" />}
+    {icon === "restaurant" && <LuUtensilsCrossed className="size-6 stroke-[1.75]" />}
+    {icon === "education" && <LuGraduationCap className="size-6 stroke-[1.75]" />}
+    {icon === "real-estate" && <LuHousePlus className="size-6 stroke-[1.75]" />}
+    {icon === "calendar" && <LuCalendarCheck className="size-6 stroke-[1.75]" />}
+    {icon === "landing-page" && <LuMousePointerClick className="size-6 stroke-[1.75]" />}
+    {icon === "custom-app" && <LuPanelsTopLeft className="size-6 stroke-[1.75]" />}
+    {!icon && logo && (
+      <ImageMod src={logo} alt={`${title} icon`} class="mx-auto max-h-7" />
+    )}
+  </div>
+
+  <!-- Title -->
+  <h3 class="text-h5-sm font-bold mb-3 text-center text-white">
+    {title}
+  </h3>
+
+  <!-- Description -->
+  <p class="text-center text-text-dark leading-relaxed text-sm">
+    {description || "Custom web development tailored precisely to your operational workflow."}
+  </p>
+</div>

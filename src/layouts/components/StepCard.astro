@@ -1,0 +1,52 @@
+---
+import {
+  LuMessageSquare,
+  LuShieldCheck,
+  LuShoppingCart,
+  LuZap,
+  LuShare2,
+} from "react-icons/lu";
+
+interface Props {
+  image?: string;
+  icon?: string;
+  number: string;
+  title: string;
+  hindi?: string;
+  content: string;
+}
+const { icon = "chat", number, title, hindi, content } = Astro.props;
+---
+
+<div class="p-6 sm:p-7 rounded-2xl bg-light border border-border transition-all duration-200 hover:border-primary/40 group relative">
+  <div class="flex items-start flex-col sm:flex-row gap-5">
+    <!-- Number & Icon Indicator -->
+    <div class="flex items-center gap-3.5 shrink-0">
+      <span class="text-2xl font-extrabold text-white/20 font-secondary min-w-[36px]">{number}</span>
+      <div class="size-11 rounded-xl bg-primary/10 border border-primary/25 flex items-center justify-center text-primary transition-transform duration-200 group-hover:scale-105">
+        {icon === "chat" && <LuMessageSquare className="size-5" />}
+        {icon === "trust" && <LuShieldCheck className="size-5" />}
+        {icon === "cart" && <LuShoppingCart className="size-5" />}
+        {icon === "enjoy" && <LuZap className="size-5" />}
+        {icon === "share" && <LuShare2 className="size-5" />}
+      </div>
+    </div>
+
+    <!-- Content Area -->
+    <div class="flex-1">
+      <div class="flex items-baseline flex-wrap gap-x-3 mb-1.5">
+        <h3 class="text-base sm:text-lg font-bold text-white tracking-tight">
+          {title}
+        </h3>
+        {hindi && (
+          <span class="text-xs text-primary font-medium font-hindi">
+            {hindi}
+          </span>
+        )}
+      </div>
+      <p class="text-sm text-text-dark leading-relaxed">
+        {content}
+      </p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,39 @@
+{
+  "site": {
+    "title": "TechNKT — Digital Products & Website Development",
+    "base_url": "https://technkt.com",
+    "base_path": "/",
+    "trailing_slash": false,
+    "favicon": "/images/technkt-icon.png",
+    "logo": "/images/logo.svg",
+    "logo_width": "180",
+    "logo_height": "45",
+    "logo_text": "TechNKT"
+  },
+  "settings": {
+    "sticky_header": true
+  },
+  "params": {
+    "contact_form_action": "#",
+    "checklist_form_action": "#",
+    "apply_form_action": "#",
+    "copyright": "Copyright &copy; 2026 <strong>TechNKT</strong>. All Rights Reserved.",
+    "footer_tagline": "Your verified marketplace for digital subscriptions, AI tools, ebooks, and custom website development.",
+    "footer_email": "support@technkt.com",
+    "footer_phone": "+91 98765 43210"
+  },
+  "navigation_button": {
+    "enable": true,
+    "label": "Explore Store",
+    "link": "/shop"
+  },
+  "google_tag_manager": {
+    "enable": false,
+    "gtm_id": "GTM-XXXXXX"
+  },
+  "metadata": {
+    "meta_author": "TechNKT",
+    "meta_image": "/images/og-image.png",
+    "meta_description": "TechNKT — Premium digital subscriptions, AI tools, ebooks, and modern website development services with instant delivery and dedicated support."
+  }
+}
