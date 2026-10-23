@@ -1,0 +1,145 @@
+---
+import { authenticateAdmin } from "../../lib/auth";
+import AdminLayout from "../../layouts/AdminLayout.astro";
+
+export const prerender = false;
+
+// If already logged in, redirect to admin dashboard
+if (await authenticateAdmin(Astro.request)) {
+  return Astro.redirect("/admin");
+}
+---
+
+<AdminLayout title="Admin Login — TechNKT">
+  <div class="min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md">
+      <!-- Logo & Branding -->
+      <div class="text-center mb-8">
+        <a href="/" class="inline-flex items-center gap-2 mb-4 group">
+          <div class="size-10 rounded-xl bg-gradient-to-tr from-[#2965E8] to-[#937AFF] flex items-center justify-center font-bold text-white text-lg shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-transform">
+            N
+          </div>
+          <span class="text-2xl font-extrabold tracking-tight text-white font-secondary">
+            Tech<span class="text-[#2965E8]">NKT</span>
+          </span>
+        </a>
+        <h1 class="text-xl font-bold text-white mb-1">Admin Portal</h1>
+        <p class="text-xs text-[#A6B1C2]">
+          Authorized TechNKT administrators only. Server-verified access.
+        </p>
+      </div>
+
+      <!-- Login Card -->
+      <div class="bg-[#151D2B] border border-[#1E2837] rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-xl relative overflow-hidden">
+        <div class="absolute -top-24 -right-24 size-48 bg-[#2965E8]/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div id="error-alert" class="hidden mb-5 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs flex items-center gap-2">
+          <svg class="size-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <span id="error-text">Invalid credentials.</span>
+        </div>
+
+        <form id="login-form" class="space-y-4">
+          <div>
+            <label for="username" class="block text-xs font-semibold text-[#A6B1C2] uppercase tracking-wider mb-2">
+              Username
+            </label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              required
+              autocomplete="username"
+              placeholder="Admin username"
+              class="w-full h-11 px-3.5 rounded-xl bg-[#0B101A] border border-[#1E2837] text-sm text-white placeholder-[#A6B1C2]/40 focus:outline-none focus:border-[#2965E8] transition-colors"
+            />
+          </div>
+
+          <div>
+            <label for="password" class="block text-xs font-semibold text-[#A6B1C2] uppercase tracking-wider mb-2">
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              required
+              autocomplete="current-password"
+              placeholder="••••••••••••"
+              class="w-full h-11 px-3.5 rounded-xl bg-[#0B101A] border border-[#1E2837] text-sm text-white placeholder-[#A6B1C2]/40 focus:outline-none focus:border-[#2965E8] transition-colors"
+            />
+          </div>
+
+          <div class="pt-2 space-y-2">
+            <button
+              type="submit"
+              id="submit-btn"
+              class="w-full h-11 rounded-xl bg-[#2965E8] hover:bg-[#3D75F0] text-white font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-md shadow-blue-500/20 active:scale-98 cursor-pointer disabled:opacity-50"
+            >
+              <span id="btn-text">Sign In to Dashboard</span>
+              <svg id="btn-spinner" class="hidden animate-spin size-4 text-white" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+              </svg>
+            </button>
+          </div>
+        </form>
+
+        <div class="mt-6 pt-5 border-t border-[#1E2837] text-center">
+          <a href="/" class="text-xs text-[#A6B1C2] hover:text-white transition-colors">
+            ← Return to TechNKT Storefront
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const form = document.getElementById("login-form") as HTMLFormElement;
+      const errorAlert = document.getElementById("error-alert") as HTMLDivElement;
+      const errorText = document.getElementById("error-text") as HTMLSpanElement;
+      const submitBtn = document.getElementById("submit-btn") as HTMLButtonElement;
+      const btnText = document.getElementById("btn-text") as HTMLSpanElement;
+      const btnSpinner = document.getElementById("btn-spinner") as unknown as SVGElement;
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        errorAlert.classList.add("hidden");
+        submitBtn.disabled = true;
+        btnText.textContent = "Verifying...";
+        btnSpinner.classList.remove("hidden");
+
+        const username = (document.getElementById("username") as HTMLInputElement).value;
+        const password = (document.getElementById("password") as HTMLInputElement).value;
+
+        try {
+          const res = await fetch("/api/admin/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password }),
+          });
+
+          const data = await res.json();
+
+          if (!res.ok || !data.success) {
+            errorText.textContent = data.error || "Authentication failed.";
+            errorAlert.classList.remove("hidden");
+            submitBtn.disabled = false;
+            btnText.textContent = "Sign In to Dashboard";
+            btnSpinner.classList.add("hidden");
+            return;
+          }
+
+          // Success: redirect to admin dashboard
+          window.location.href = "/admin";
+        } catch (err: any) {
+          errorText.textContent = "Network error. Please try again.";
+          errorAlert.classList.remove("hidden");
+          submitBtn.disabled = false;
+          btnText.textContent = "Sign In to Dashboard";
+          btnSpinner.classList.add("hidden");
+        }
+      });
+    </script>
+  </div>
+</AdminLayout>

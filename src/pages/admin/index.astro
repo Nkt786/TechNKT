@@ -1,0 +1,15 @@
+---
+import { authenticateAdmin } from "../../lib/auth";
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import AdminDashboard from "../../layouts/components/admin/AdminDashboard";
+
+export const prerender = false;
+
+if (!(await authenticateAdmin(Astro.request))) {
+  return Astro.redirect("/admin/login");
+}
+---
+
+<AdminLayout title="TechNKT Business Control Panel">
+  <AdminDashboard client:load initialTab="dashboard" />
+</AdminLayout>

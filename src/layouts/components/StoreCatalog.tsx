@@ -11,20 +11,75 @@ import {
   LuSearch,
   LuSlidersHorizontal,
   LuRotateCcw,
+  LuEye,
 } from "react-icons/lu";
+import ProductDetailModal, { type DetailedProduct, type VariantData } from "./ProductDetailModal";
 
 export default function StoreCatalog() {
+  const [categories, setCategories] = useState(PRODUCT_CATEGORIES);
+  const [productsList, setProductsList] = useState<any[]>(PRODUCTS);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [sortBy, setSortBy] = useState<string>("featured");
   const [addedId, setAddedId] = useState<string | null>(null);
+  const [selectedProductForModal, setSelectedProductForModal] = useState<DetailedProduct | null>(null);
 
-  // Check URL search params on mount (e.g. /shop?category=subscriptions)
+  // Fetch real database products on mount
+  useEffect(() => {
+    fetch("/api/products")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.products && data.products.length > 0) {
+          // Map database products to UI format
+          const mapped = data.products.map((p: any) => {
+            const primaryVar = p.variants?.[0] || {};
+            const minPrice = p.variants?.length
+              ? Math.min(...p.variants.map((v: any) => v.price_amount))
+              : p.price_amount || 99;
+            const compPrice = primaryVar.comparison_price_amount || 0;
+
+            return {
+              id: p.id,
+              name: p.name,
+              category: p.category_id,
+              image: p.image_url,
+              image_url: p.image_url,
+              price: minPrice,
+              originalPrice: compPrice,
+              formattedPrice: `₹${minPrice}`,
+              formattedOriginalPrice: compPrice > minPrice ? `₹${compPrice}` : "",
+              period: primaryVar.duration_unit ? `/${primaryVar.duration_unit}` : "/mo",
+              instant: Boolean(p.instant),
+              badge: p.badge,
+              description: p.description || p.short_description || "",
+              short_description: p.short_description || "",
+              featured: Boolean(p.featured),
+              variants: p.variants || [],
+            };
+          });
+          setProductsList(mapped);
+        }
+        if (data.success && data.categories && data.categories.length > 0) {
+          const allCat = { id: "all", name: "All", icon: "/images/categories/category-all.svg" };
+          const rest = data.categories.map((c: any) => ({
+            id: c.id,
+            name: c.name,
+            icon: c.icon || "/images/categories/category-subscriptions.svg",
+          }));
+          setCategories([allCat, ...rest]);
+        }
+      })
+      .catch((err) => {
+        console.warn("Failed to fetch dynamic products, using fallback:", err);
+      });
+  }, []);
+
+  // Check URL search params on mount
   useEffect(() => {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const cat = params.get("category");
-      if (cat && PRODUCT_CATEGORIES.some((c) => c.id === cat)) {
+      if (cat) {
         setSelectedCategory(cat);
       }
     }
@@ -44,7 +99,7 @@ export default function StoreCatalog() {
   };
 
   const filteredAndSortedProducts = useMemo(() => {
-    let result = [...PRODUCTS];
+    let result = [...productsList];
 
     // Filter by Category
     if (selectedCategory !== "all") {
@@ -58,7 +113,7 @@ export default function StoreCatalog() {
         (p) =>
           p.name.toLowerCase().includes(query) ||
           p.description.toLowerCase().includes(query) ||
-          p.category.toLowerCase().includes(query),
+          p.category.toLowerCase().includes(query)
       );
     }
 
@@ -80,24 +135,39 @@ export default function StoreCatalog() {
     }
 
     return result;
-  }, [selectedCategory, searchQuery, sortBy]);
+  }, [productsList, selectedCategory, searchQuery, sortBy]);
 
-  const addToCart = (product: Product, redirect = false) => {
+  const addToCart = (product: any, variant?: VariantData, qty = 1, redirect = false) => {
     try {
       const raw = localStorage.getItem("technkt_cart");
       const cart = raw ? JSON.parse(raw) : [];
-      const existing = cart.find((i: any) => i.id === product.id);
+
+      const targetVariant = variant || product.variants?.[0] || {
+        id: `var_${product.id}_def`,
+        variant_name: "Standard",
+        price_amount: product.price,
+      };
+
+      const cartItemKey = `${product.id}__${targetVariant.id}`;
+      const existing = cart.find((i: any) => i.cartKey === cartItemKey || (i.id === product.id && i.variant_id === targetVariant.id));
+
       if (existing) {
-        existing.quantity = (existing.quantity || 1) + 1;
+        existing.quantity = (existing.quantity || 1) + qty;
       } else {
         cart.push({
+          cartKey: cartItemKey,
           id: product.id,
+          variant_id: targetVariant.id,
           name: product.name,
-          price: product.formattedPrice,
-          period: product.period,
-          quantity: 1,
+          variant_name: targetVariant.variant_name,
+          price: `₹${targetVariant.price_amount}`,
+          priceAmount: targetVariant.price_amount,
+          period: product.period || "/mo",
+          quantity: qty,
+          image: product.image,
         });
       }
+
       localStorage.setItem("technkt_cart", JSON.stringify(cart));
       window.dispatchEvent(new Event("cart-updated"));
 
@@ -113,9 +183,7 @@ export default function StoreCatalog() {
     }
   };
 
-  const activeCategoryObj = PRODUCT_CATEGORIES.find(
-    (c) => c.id === selectedCategory,
-  );
+  const activeCategoryObj = categories.find((c) => c.id === selectedCategory);
   const headingText =
     selectedCategory === "all"
       ? "All Products"
@@ -123,10 +191,10 @@ export default function StoreCatalog() {
 
   return (
     <div className="w-full">
-      {/* ── Category Navigation Chips Row (Screenshot 4 style) ── */}
+      {/* ── Category Navigation Chips Row ── */}
       <div className="mb-8 pt-4">
         <div className="flex items-center gap-2.5 overflow-x-auto pb-2 scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap">
-          {PRODUCT_CATEGORIES.map((cat) => {
+          {categories.map((cat) => {
             const isSelected = selectedCategory === cat.id;
             return (
               <button
@@ -165,7 +233,6 @@ export default function StoreCatalog() {
 
         {/* Controls: Search & Sort */}
         <div className="flex items-center gap-3">
-          {/* Compact Search Bar */}
           <div className="relative flex-1 sm:w-60">
             <LuSearch className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-[#A6B1C2]" />
             <input
@@ -177,7 +244,6 @@ export default function StoreCatalog() {
             />
           </div>
 
-          {/* Sort Dropdown */}
           <div className="relative">
             <select
               value={sortBy}
@@ -194,7 +260,7 @@ export default function StoreCatalog() {
         </div>
       </div>
 
-      {/* ── Product Grid: 2 Columns on Mobile, 4 on Desktop (Screenshot 2 & 4) ── */}
+      {/* ── Product Grid: 2 Columns on Mobile, 4 on Desktop ── */}
       {filteredAndSortedProducts.length > 0 ? (
         <div className="grid grid-cols-2 gap-2.5 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 mb-16">
           {filteredAndSortedProducts.map((prod) => {
@@ -205,8 +271,11 @@ export default function StoreCatalog() {
                 className="group relative flex flex-col justify-between rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 bg-[#151D2B] border border-[#1E2837] hover:border-[#2965E8]/50 transition-all duration-200 hover:-translate-y-0.5"
               >
                 <div>
-                  {/* Square Product Artwork */}
-                  <div className="relative w-full aspect-square rounded-lg sm:rounded-xl overflow-hidden mb-2.5 bg-[#0B101A] border border-white/5 flex items-center justify-center">
+                  {/* Square Product Artwork - Click to open details */}
+                  <div
+                    onClick={() => setSelectedProductForModal(prod)}
+                    className="relative w-full aspect-square rounded-lg sm:rounded-xl overflow-hidden mb-2.5 bg-[#0B101A] border border-white/5 flex items-center justify-center cursor-pointer"
+                  >
                     <img
                       src={prod.image}
                       alt={prod.name}
@@ -221,10 +290,19 @@ export default function StoreCatalog() {
                         <span>INSTANT</span>
                       </div>
                     )}
+
+                    {/* Hover Quick View Overlay */}
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1.5 text-white text-xs font-semibold">
+                      <LuEye className="size-4" />
+                      <span>Details</span>
+                    </div>
                   </div>
 
-                  {/* Product Title */}
-                  <h3 className="text-xs sm:text-sm font-semibold text-[#F4F6FA] mb-1.5 line-clamp-2 leading-snug">
+                  {/* Product Title - Click to open details */}
+                  <h3
+                    onClick={() => setSelectedProductForModal(prod)}
+                    className="text-xs sm:text-sm font-semibold text-[#F4F6FA] mb-1.5 line-clamp-2 leading-snug cursor-pointer hover:text-[#2965E8] transition-colors"
+                  >
                     {prod.name}
                   </h3>
 
@@ -246,7 +324,7 @@ export default function StoreCatalog() {
                   {/* Cart Button */}
                   <button
                     type="button"
-                    onClick={() => addToCart(prod, false)}
+                    onClick={() => addToCart(prod, undefined, 1, false)}
                     className={`size-8 sm:size-9 rounded-lg border flex items-center justify-center transition-all duration-150 cursor-pointer active:scale-95 shrink-0 ${
                       isJustAdded
                         ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-400"
@@ -262,10 +340,16 @@ export default function StoreCatalog() {
                     )}
                   </button>
 
-                  {/* Buy Now Button */}
+                  {/* Buy Now Button - Opens modal or directly checks out */}
                   <button
                     type="button"
-                    onClick={() => addToCart(prod, true)}
+                    onClick={() => {
+                      if (prod.variants && prod.variants.length > 1) {
+                        setSelectedProductForModal(prod);
+                      } else {
+                        addToCart(prod, undefined, 1, true);
+                      }
+                    }}
                     className="flex-1 h-8 sm:h-9 rounded-lg font-semibold text-xs sm:text-sm text-white flex items-center justify-center gap-1 transition-all duration-150 cursor-pointer active:scale-95 bg-[#2965E8] hover:bg-[#3D75F0] border border-white/10"
                   >
                     <LuZap className="size-3.5" />
@@ -293,12 +377,26 @@ export default function StoreCatalog() {
               setSearchQuery("");
               setSortBy("featured");
             }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-[#1E2837] text-xs font-medium text-white transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-[#1E2837] text-xs font-medium text-white transition-colors cursor-pointer"
           >
             <LuRotateCcw className="size-3.5" />
             <span>Reset filters</span>
           </button>
         </div>
+      )}
+
+      {/* Product Detail Modal */}
+      {selectedProductForModal && (
+        <ProductDetailModal
+          product={selectedProductForModal}
+          onClose={() => setSelectedProductForModal(null)}
+          onAddToCart={(product, variant, qty, redirect) => {
+            addToCart(product, variant, qty, redirect);
+            if (!redirect) {
+              setSelectedProductForModal(null);
+            }
+          }}
+        />
       )}
     </div>
   );

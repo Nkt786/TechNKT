@@ -17,7 +17,10 @@ package-lock.json
 
 # environment variables
 .env
-.env.production
+.env.*
+.env.local
+.env.backup
+!.env.example
 
 # macOS-specific files
 .DS_Store
@@ -27,3 +30,13 @@ package-lock.json
 .claude
 # ide
 .idea/
+
+# database
+data/*.db
+data/*.db-journal
+data/*.db-wal
+data/*.db-shm
+data/backups/
+
+.neon
+scratch/

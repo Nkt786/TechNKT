@@ -238,25 +238,12 @@
     navMenuBgToggle();
 
     if (header) {
-      let lastScrollY = window.scrollY;
-      const scrollThreshold = 200;
       window.addEventListener("scroll", () => {
-        if (navToggle && navToggle.checked) {
-          header.classList.remove("hide");
-          lastScrollY = window.scrollY;
-          return;
-        }
-
-        if (window.scrollY > scrollThreshold) {
-          if (window.scrollY < lastScrollY) {
-            header.classList.remove("hide");
-          } else {
-            header.classList.add("hide");
-          }
+        if (window.scrollY > 20) {
+          header.classList.add("header-scrolled");
         } else {
-          header.classList.remove("hide");
+          header.classList.remove("header-scrolled");
         }
-        lastScrollY = window.scrollY;
       });
     }
   }

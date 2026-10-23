@@ -33,7 +33,8 @@ export const POST: APIRoute = async ({ request, url }) => {
   let name = "";
   let email = "";
   let planTitle = "Plan";
-  let price = "0";
+  let productId = "";
+  let variantId = "";
   let interval = "month";
 
   try {
@@ -41,7 +42,8 @@ export const POST: APIRoute = async ({ request, url }) => {
     name = body.name ?? "";
     email = body.email ?? "";
     planTitle = body.planTitle ?? "Plan";
-    price = body.price ?? "0";
+    productId = body.productId ?? "";
+    variantId = body.variantId ?? "";
     interval = body.interval ?? "month"; // "month" or "year"
   } catch (e) {
     return new Response(
@@ -55,6 +57,46 @@ export const POST: APIRoute = async ({ request, url }) => {
       JSON.stringify({ success: false, error: "Name and email are required" }),
       { status: 400, headers: { "Content-Type": "application/json" } }
     );
+  }
+
+  // SECURITY FIX: Resolve price strictly from trusted database records
+  let trustedPriceInr = 0;
+  try {
+    const { getProductById } = await import("../../lib/db/queries");
+    if (productId) {
+      const prod = await getProductById(productId);
+      if (prod && prod.variants && prod.variants.length > 0) {
+        const variant = variantId
+          ? prod.variants.find((v) => v.id === variantId)
+          : prod.variants[0];
+        if (variant) {
+          trustedPriceInr = variant.price_amount;
+          planTitle = `${prod.name} (${variant.variant_name})`;
+        }
+      }
+    }
+  } catch (dbErr) {
+    console.warn("DB lookup in checkout fallback:", dbErr);
+  }
+
+  // Fallback to static pricing tiers for web-dev plans if not in DB
+  if (trustedPriceInr <= 0) {
+    const normalizedPlan = planTitle.toLowerCase();
+    if (normalizedPlan.includes("starter") || normalizedPlan.includes("basic")) {
+      trustedPriceInr = interval === "year" ? 2999 : 299;
+    } else if (normalizedPlan.includes("pro") || normalizedPlan.includes("growth")) {
+      trustedPriceInr = interval === "year" ? 5999 : 599;
+    } else if (normalizedPlan.includes("enterprise") || normalizedPlan.includes("business")) {
+      trustedPriceInr = interval === "year" ? 11999 : 1199;
+    } else {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: "Invalid or unrecognized plan selection. Price cannot be determined.",
+        }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
   }
 
   const nameParts = name.trim().split(/\s+/);
@@ -87,13 +129,12 @@ export const POST: APIRoute = async ({ request, url }) => {
       console.log("GHL contact initiated for checkout");
     } catch (err) {
       console.error("GHL integration error during checkout:", err);
-      // We don't fail the checkout if GHL fails, just log it.
     }
   }
 
-  // 2. Create Stripe Checkout Session
+  // 2. Create Stripe Checkout Session with TRUSTED price
   try {
-    const unitAmount = Math.round(parseFloat(price) * 100);
+    const unitAmount = Math.round(trustedPriceInr * 100);
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -101,7 +142,7 @@ export const POST: APIRoute = async ({ request, url }) => {
       line_items: [
         {
           price_data: {
-            currency: "usd",
+            currency: "inr",
             product_data: {
               name: planTitle,
             },

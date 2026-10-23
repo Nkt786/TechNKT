@@ -1,3 +1,4 @@
+
 import { unified } from "@astrojs/markdown-remark";
 import mdx from "@astrojs/mdx";
 import react from "@astrojs/react";
@@ -9,6 +10,7 @@ import { defineConfig, fontProviders } from "astro/config";
 import remarkCollapse from "remark-collapse";
 import remarkToc from "remark-toc";
 import sharp from "sharp";
+import path from "node:path";
 import config from "./src/config/config.json";
 import theme from "./src/config/theme.json";
 
@@ -48,6 +50,17 @@ const fontsConfig = Object.entries(theme.fonts.font_family)
     };
   });
 
+function reactDevRuntimeFix() {
+  return {
+    name: "fix-react-jsx-dev-runtime",
+    resolveId(id) {
+      if (id === "react/jsx-dev-runtime") {
+        return path.resolve("./node_modules/react/cjs/react-jsx-dev-runtime.development.js");
+      }
+    },
+  };
+}
+
 // https://astro.build/config
 export default defineConfig({
   adapter: vercel(),
@@ -55,7 +68,7 @@ export default defineConfig({
   base: config.site.base_path ? config.site.base_path : "/",
   trailingSlash: config.site.trailing_slash ? "always" : "never",
   image: { service: sharp(), dangerouslyProcessSVG: true },
-  vite: { plugins: [tailwindcss()] },
+  vite: { plugins: [tailwindcss(), reactDevRuntimeFix()] },
   fonts: fontsConfig,
   integrations: [
     react(),

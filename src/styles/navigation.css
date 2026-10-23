@@ -1,10 +1,13 @@
 .header {
-  @apply py-2.5 sm:py-3.5 lg:py-4 left-0 w-full z-50 transition-all duration-300;
-  transform: translateY(0px);
+  @apply py-2.5 sm:py-3.5 lg:py-4 left-0 top-0 w-full z-50 transition-all duration-300;
+  position: fixed;
+  top: 0;
+  left: 0;
+  transform: translateY(0px) !important;
 }
 
-.header.hide {
-  transform: translateY(-200px);
+.header.header-scrolled {
+  @apply bg-[#0B101A]/95 shadow-[0_4px_24px_rgba(0,0,0,0.6)] border-white/[0.08];
 }
 
 /* navbar items */

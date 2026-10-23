@@ -1,0 +1,37 @@
+---
+import "@/styles/main.css";
+import theme from "@/config/theme.json";
+import { Font } from "astro:assets";
+
+export interface Props {
+  title?: string;
+}
+
+const { title = "TechNKT Business Control Panel" } = Astro.props;
+
+const fontEntries = Object.entries(theme.fonts.font_family).filter(
+  ([key]) => !key.includes("_type")
+);
+---
+
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <link rel="icon" type="image/png" href="/images/technkt-icon.png" />
+    <link rel="shortcut icon" href="/images/technkt-icon.png" />
+
+    {
+      fontEntries.map(([key]) => {
+        const cssVar = `--font-${key}` as any;
+        return <Font cssVariable={cssVar} preload />;
+      })
+    }
+  </head>
+  <body class="bg-[#0B101A] text-[#F4F6FA] font-sans antialiased selection:bg-[#2965E8] selection:text-white min-h-screen md:h-screen md:overflow-hidden">
+    <slot />
+  </body>
+
+</html>

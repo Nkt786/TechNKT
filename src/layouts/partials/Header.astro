@@ -22,7 +22,7 @@ const { pathname } = Astro.url;
 ---
 
 <header
-  class={`header z-50 w-full transition-all duration-300 bg-[#0B101A]/90 backdrop-blur-md border-b border-white/[0.06] ${settings.sticky_header ? "fixed top-0 left-0" : ""}`}
+  class="header fixed top-0 left-0 z-50 w-full transition-all duration-300 bg-[#0B101A]/90 backdrop-blur-md border-b border-white/[0.06]"
 >
   <nav class="container flex flex-wrap items-center justify-between relative z-30">
     <!-- Left: Brand Logo -->
