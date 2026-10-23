@@ -1,12 +1,12 @@
 ---
 title: "Careers"
-meta_title: "Careers - Join Our Local Business Growth Team"
-description: "Join us and help empower local businesses with automated tools for their community growth."
+meta_title: "Careers at TechNKT — Build Modern Digital Solutions"
+description: "Join TechNKT to help build high-performance web applications and deliver verified digital products."
 image: ""
 draft: false
 
 page_header:
-  title: "Help Us Grow <strong>Local Businesses</strong>"
+  title: "Join Our Team at <strong>TechNKT</strong>"
 
 gallery:
   enable: true

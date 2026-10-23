@@ -17,7 +17,7 @@ At **TechNKT**, customer confidence and transparent dealings are our highest pri
 For digital entertainment passes, streaming profiles, software tools, and subscription combos:
 
 - **100% Replacement Guarantee:** Every subscription plan comes with full replacement warranty coverage for the entirety of its purchased period (1 month, 3 months, 6 months, or 1 year).
-- **If You Encounter an Issue:** If your credentials cease working, password changes occur upstream, or an error arises, simply message us on WhatsApp or email `support@technkt.com` with your Order ID.
+- **If You Encounter an Issue:** If your credentials cease working, password changes occur upstream, or an error arises, simply message us on WhatsApp or email `support@technkt.in` with your Order ID.
 - **Resolution Time:** We typically inspect and provide replacement working credentials within **2 to 4 hours** (and guaranteed within 24 hours).
 - **Refund Eligibility:** If our team is unable to provide working replacement credentials within 24 hours for a valid unexpired subscription, you are entitled to a pro-rated or full refund back to your original payment method.
 
@@ -44,6 +44,6 @@ For custom website design, web app development, and landing page projects:
 
 To initiate a warranty claim or refund request:
 
-1. Send an email to **support@technkt.com** or chat directly with our WhatsApp support line.
+1. Send an email to **support@technkt.in** or chat directly with our WhatsApp support line.
 2. Provide your **Order ID** or invoice number and a brief screenshot or description of the issue.
 3. Our support agent will verify and resolve your request without unnecessary hassle.

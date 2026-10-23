@@ -1,8 +1,9 @@
 {
-  "name": "automark-astro",
+  "name": "technkt",
   "version": "1.0.1",
-  "description": "Automark is a marketing and sales automation platform",
-  "author": "Themefisher",
+  "description": "TechNKT — Verified Digital Subscriptions, AI Tools, Curated Ebooks, and Modern Website Development",
+  "author": "TechNKT",
+  "homepage": "https://technkt.in",
   "license": "MIT",
   "packageManager": "pnpm@11.9.0",
   "type": "module",
@@ -38,7 +39,6 @@
     "remark-collapse": "^0.1.2",
     "remark-toc": "^9.0.0",
     "sharp": "^0.35.2",
-    "stripe": "^22.3.0",
     "vite": "^8.1.0"
   },
   "devDependencies": {

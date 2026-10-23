@@ -1,5 +1,4 @@
 ---
-import PricingCheckout from "./PricingCheckout";
 
 interface Feature {
   label: string;
@@ -71,14 +70,12 @@ const {
 
   {
     button.enable && (
-      <PricingCheckout 
-        client:load 
-        planTitle={title}
-        monthlyPrice={price}
-        yearlyPrice={yearly_price}
-        buttonLabel={button.label}
-        isFeatured={is_featured}
-      />
+      <a
+        href={button.link || "/contact"}
+        class="btn btn-primary w-full my-10 block text-center cursor-pointer"
+      >
+        {button.label}
+      </a>
     )
   }
 

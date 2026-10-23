@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
+import { createAuditLog } from "../../lib/db/queries";
 
-// This route is server-rendered (Vercel Serverless Function)
 export const prerender = false;
 
 interface GHLContactPayload {
@@ -16,14 +16,6 @@ interface GHLContactPayload {
 export const POST: APIRoute = async ({ request }) => {
   const GHL_API_KEY = import.meta.env.GHL_API_KEY;
   const GHL_LOCATION_ID = import.meta.env.GHL_LOCATION_ID;
-
-  if (!GHL_API_KEY || !GHL_LOCATION_ID) {
-    console.error("Missing GHL_API_KEY or GHL_LOCATION_ID env vars");
-    return new Response(
-      JSON.stringify({ success: false, error: "Server misconfiguration" }),
-      { status: 500, headers: { "Content-Type": "application/json" } },
-    );
-  }
 
   // Parse incoming form data
   let name = "";
@@ -59,61 +51,30 @@ export const POST: APIRoute = async ({ request }) => {
   const firstName = nameParts[0] ?? "";
   const lastName = nameParts.slice(1).join(" ");
 
-  const payload: GHLContactPayload = {
-    locationId: GHL_LOCATION_ID,
-    firstName,
-    lastName,
-    email: email.trim(),
-    phone: phone.trim(),
-    tags: ["website-contact-form"],
-  };
-
   try {
-    const ghlRes = await fetch(
-      "https://services.leadconnectorhq.com/contacts/upsert",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${GHL_API_KEY}`,
-          "Content-Type": "application/json",
-          Version: "2021-07-28",
-        },
-        body: JSON.stringify(payload),
-      },
+    // Record contact inquiry in TechNKT database
+    await createAuditLog(
+      "contact_submission",
+      "contact_form",
+      null,
+      `Contact message received from ${name.trim()} (${email.trim()} / ${phone.trim()}): ${message.trim().slice(0, 500)}`,
+      name.trim(),
     );
 
-    if (!ghlRes.ok) {
-      const errText = await ghlRes.text();
-      let detail = "Failed to submit. Please try again.";
+    // Optional GoHighLevel forward if credentials are provided
+    if (GHL_API_KEY && GHL_LOCATION_ID) {
+      const payload: GHLContactPayload = {
+        locationId: GHL_LOCATION_ID,
+        firstName,
+        lastName,
+        email: email.trim(),
+        phone: phone.trim(),
+        tags: ["website-contact-form"],
+      };
+
       try {
-        const errJson = JSON.parse(errText);
-        detail = errJson.message || errJson.error || errText;
-      } catch (e) {
-        detail = errText;
-      }
-
-      console.error(`GHL API error ${ghlRes.status}:`, errText);
-      return new Response(
-        JSON.stringify({
-          success: false,
-          error: detail,
-        }),
-        {
-          status: ghlRes.status,
-          headers: { "Content-Type": "application/json" },
-        },
-      );
-    }
-
-    const result = await ghlRes.json();
-    const contactId = result?.contact?.id;
-    console.log("GHL contact created:", contactId);
-
-    // 1. If there's a message, add it to the Conversations tab
-    if (contactId && message.trim()) {
-      try {
-        const convRes = await fetch(
-          "https://services.leadconnectorhq.com/conversations/messages",
+        const ghlRes = await fetch(
+          "https://services.leadconnectorhq.com/contacts/upsert",
           {
             method: "POST",
             headers: {
@@ -121,52 +82,33 @@ export const POST: APIRoute = async ({ request }) => {
               "Content-Type": "application/json",
               Version: "2021-07-28",
             },
-            body: JSON.stringify({
-              type: "Email",
-              contactId: contactId,
-              direction: "inbound",
-              status: "delivered", // Ensures it appears as a completed message
-              subject: "Website Contact Form Submission", // Required for Email type
-              html: `<p>${message.trim().replace(/\n/g, "<br>")}</p>`, // GHL Email type prefers HTML
-              message: message.trim(), // Fallback plain text
-            }),
+            body: JSON.stringify(payload),
           },
         );
 
-        if (!convRes.ok) {
-          const convErr = await convRes.text();
-          console.error(
-            `GHL Conversation API error ${convRes.status}:`,
-            convErr,
-          );
-        } else {
-          console.log("GHL conversation message added successfully.");
+        if (ghlRes.ok) {
+          const result = await ghlRes.json();
+          const contactId = result?.contact?.id;
+
+          if (contactId && message.trim()) {
+            await fetch(
+              `https://services.leadconnectorhq.com/contacts/${contactId}/notes`,
+              {
+                method: "POST",
+                headers: {
+                  Authorization: `Bearer ${GHL_API_KEY}`,
+                  "Content-Type": "application/json",
+                  Version: "2021-07-28",
+                },
+                body: JSON.stringify({
+                  body: `Message from web form:\n\n${message.trim()}`,
+                }),
+              },
+            );
+          }
         }
-      } catch (err) {
-        console.error("Failed to call GHL Conversation API:", err);
-      }
-    }
-
-    // 2. Also add it as a Note for redundant audit tracking
-    if (contactId && message.trim()) {
-      try {
-        await fetch(
-          `https://services.leadconnectorhq.com/contacts/${contactId}/notes`,
-          {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${GHL_API_KEY}`,
-              "Content-Type": "application/json",
-              Version: "2021-07-28",
-            },
-            body: JSON.stringify({
-              body: `Message from web form:\n\n${message.trim()}`,
-            }),
-          },
-        );
-        console.log("GHL note added to contact:", contactId);
-      } catch (noteErr) {
-        console.error("Failed to add GHL note:", noteErr);
+      } catch (ghlErr) {
+        console.warn("[TechNKT] Optional GHL forward skipped:", ghlErr);
       }
     }
 
@@ -175,11 +117,11 @@ export const POST: APIRoute = async ({ request }) => {
       headers: { "Content-Type": "application/json" },
     });
   } catch (err) {
-    console.error("Contact form error:", err);
+    console.error("[TechNKT] Contact form submission error:", err);
     return new Response(
       JSON.stringify({
         success: false,
-        error: "An unexpected error occurred.",
+        error: "An unexpected error occurred. Please try again.",
       }),
       { status: 500, headers: { "Content-Type": "application/json" } },
     );

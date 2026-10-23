@@ -25,7 +25,7 @@ export default function HeroVisualComposition() {
           </div>
           <div className="px-3 py-1 rounded-md bg-[#0B101A] border border-[#1E2837] text-[#A6B1C2] text-[11px] font-mono tracking-tight flex items-center gap-1.5">
             <span className="size-1.5 rounded-full bg-[#2965E8]" />
-            <span>technkt.com/store</span>
+            <span>technkt.in/store</span>
           </div>
           <div className="flex items-center gap-2 text-[#A6B1C2] text-[11px]">
             <LuLaptop className="size-3.5" />
