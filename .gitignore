@@ -3,6 +3,7 @@ dist/
 .output/
 .json/
 .vercel
+.netlify/
 
 # dependencies
 node_modules/
