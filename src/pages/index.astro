@@ -1,255 +1,597 @@
 ---
 import Base from "@/layouts/Base.astro";
-import ProductCards from "@/layouts/components/ProductCards";
-import BusinessNeeds from "@/layouts/components/BusinessNeeds.astro";
+import HomeStoreShowcase from "@/layouts/components/HomeStoreShowcase";
+import HeroVisualComposition from "@/layouts/components/HeroVisualComposition";
 import CustomerReviewsCarousel from "@/layouts/components/CustomerReviewsCarousel";
 import { customerReviews } from "@/data/reviews";
-import OurStory from "@/layouts/components/OurStory.astro";
 import Faq from "@/layouts/components/Faq.astro";
-import EbooksShowcase from "@/layouts/components/EbooksShowcase";
-import ShopByPlan from "@/layouts/components/ShopByPlan";
 import { getListPage } from "@/lib/contentParser.astro";
-import { markdownify } from "@/lib/utils/textConverter";
-import Features from "@/partials/Features.astro";
-import CallToAction from "@/partials/CallToAction.astro";
 import type { Homepage } from "@/types";
 import {
   LuArrowRight,
   LuShieldCheck,
   LuZap,
   LuHeadphones,
+  LuBuilding2,
+  LuShoppingCart,
+  LuBriefcase,
+  LuMousePointerClick,
+  LuCalendarCheck,
+  LuLayers,
+  LuCodeXml,
+  LuCheckCircle2,
+  LuExternalLink,
 } from "react-icons/lu";
-import HeroVisual from "@/layouts/components/HeroVisual";
 
 const homepage = await getListPage("homepage", "-index");
 const homepageData: Homepage = homepage.data;
+
+const pageMetadata = {
+  title: "TechNKT — Professional Websites & Digital Solutions",
+  meta_title: "TechNKT — Website Development Studio & Digital Products Store",
+  description: "TechNKT builds high-converting modern websites and offers verified digital subscriptions, AI tools, and combo packs with replacement warranty and dedicated support.",
+  canonical: "https://technkt.in/",
+};
+
+// SECTION 3: 6 Actual TechNKT Website Development Services
+const WEB_SERVICES = [
+  {
+    icon: LuBuilding2,
+    title: "Business Websites",
+    description: "Professional digital front-doors with service packages, trust signals, and direct WhatsApp lead capture.",
+    link: "/web-development#services",
+  },
+  {
+    icon: LuShoppingCart,
+    title: "E-Commerce Websites",
+    description: "High-converting online stores built with instant search, responsive product grids, and smooth UPI/card checkout.",
+    link: "/web-development#services",
+  },
+  {
+    icon: LuBriefcase,
+    title: "Portfolio Websites",
+    description: "Distinctive, editorial personal and agency websites that showcase your work and case studies to high-value clients.",
+    link: "/web-development#services",
+  },
+  {
+    icon: LuMousePointerClick,
+    title: "Landing Pages",
+    description: "Laser-focused single-page funnels engineered for paid Google/Meta advertising with sub-second load times.",
+    link: "/web-development#services",
+  },
+  {
+    icon: LuCalendarCheck,
+    title: "Lead Generation Websites",
+    description: "Tailored booking and inquiry funnels with automated WhatsApp confirmations for clinics, consultants, and tutors.",
+    link: "/web-development#services",
+  },
+  {
+    icon: LuLayers,
+    title: "Custom Web Applications",
+    description: "Bespoke analytics dashboards, client portals, internal team tools, and tailored database workflows built for your scale.",
+    link: "/web-development#services",
+  },
+];
+
+// SECTION 5: Real Verified Portfolio Archetypes
+const PORTFOLIO_PROJECTS = [
+  {
+    title: "High-Converting E-Commerce Storefront",
+    category: "E-Commerce Architecture",
+    tags: ["Astro", "React", "UPI Checkout", "Instant Search"],
+    description: "Engineered with client-side reactive cart state, instant product filtering, image optimization, and smooth UPI and card checkout integration.",
+    image: "/images/technkt-webdev-showcase.jpg",
+    link: "/web-development",
+  },
+  {
+    title: "Corporate & Business Digital Presence",
+    category: "Business Website",
+    tags: ["Astro SSG", "Netlify", "WhatsApp Leads", "100% Speed"],
+    description: "A fast, editorial web presence for service companies and agencies featuring structured service showcases, trust signals, and direct WhatsApp inquiry capture.",
+    image: "/images/technkt-webdev-showcase.jpg",
+    link: "/web-development",
+  },
+  {
+    title: "Paid Traffic Advertising Funnel",
+    category: "Landing Page",
+    tags: ["Mobile-First", "Sub-Second Load", "High Conversion"],
+    description: "Ultra-optimized single-page funnel engineered specifically for Google and Meta ad traffic with zero bloat and high-converting inquiry triggers.",
+    image: "/images/technkt-webdev-showcase.jpg",
+    link: "/web-development",
+  },
+];
 ---
 
-<Base>
-  <!-- Hero Section (Left-Aligned, Asymmetrical, Solid Colors, No Gradient Text) -->
-  <section class="relative pt-28 pb-16 lg:pt-36 lg:pb-24 overflow-hidden border-b border-[#1E2837] bg-[#0B101A]">
-    <!-- Subtle Slate-Blue Ambient Illumination Behind Hero (Zero Cheap Glow) -->
+<Base {...pageMetadata}>
+  <div class="relative overflow-hidden">
+    <div class="homepage-texture-overlay" aria-hidden="true"></div>
+  <!-- ========================================================================= -->
+  <!-- SECTION 2 — HERO (60% Web Dev, 40% Digital Store)                         -->
+  <!-- ========================================================================= -->
+  <section class="relative pt-24 pb-14 sm:pt-28 sm:pb-16 lg:pt-36 lg:pb-20 overflow-hidden border-b border-[#1E2837] bg-[#0B101A]">
+    <!-- Ambient Illumination (Emerald/Slate-Blue subtle glow) -->
     <div
       class="pointer-events-none absolute inset-0 -z-10"
-      style="background: radial-gradient(ellipse 90% 60% at 50% -10%, rgba(41, 101, 232, 0.14) 0%, rgba(21, 29, 43, 0.4) 45%, transparent 80%);"
+      style="background: radial-gradient(ellipse 90% 60% at 50% -10%, rgba(16, 185, 129, 0.12) 0%, rgba(21, 29, 43, 0.45) 45%, transparent 80%);"
     ></div>
+
     <div class="container relative z-10">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center">
         
         <!-- Left Hero Content (6 Columns on Desktop) -->
         <div class="lg:col-span-6 text-left">
           
-          <!-- Brand Kicker -->
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-white/[0.04] border border-[#1E2837] mb-6 text-xs font-semibold text-[#F4F6FA] tracking-wide uppercase">
-            <span class="size-2 rounded-full bg-[#2965E8] animate-pulse"></span>
-            <span>Digital Products &amp; Web Studio • TechNKT</span>
+          <!-- Brand Kicker Badge -->
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-white/[0.04] border border-[#1E2837] mb-5 text-xs font-semibold text-[#F4F6FA] tracking-wide uppercase">
+            <span class="size-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>Web Development Studio &amp; Digital Store • TechNKT</span>
           </div>
 
-          <!-- Main Hero Headline - Flat, Solid Typography (No AI Gradients) -->
-          <h1 class="text-4xl sm:text-5xl lg:text-[54px] font-extrabold text-[#F4F6FA] tracking-tight leading-[1.08] mb-6 font-secondary">
-            Everything Digital.
-            <span class="block text-primary mt-1">Carefully Chosen.</span>
+          <!-- Main Hero Headline - Clear, Honest Typography -->
+          <h1 class="text-3xl sm:text-4xl lg:text-[50px] font-extrabold text-white tracking-tight leading-[1.12] mb-5 font-secondary">
+            Professional Websites &amp;
+            <span class="block text-emerald-400 mt-1">Digital Solutions for Your Business</span>
           </h1>
 
           <!-- Supporting Subtitle -->
-          <p class="text-base sm:text-lg text-text-dark max-w-xl leading-relaxed mb-8 font-normal">
-            {homepageData.banner.content}
+          <p class="text-sm sm:text-base lg:text-lg text-[#A6B1C2] max-w-xl leading-relaxed mb-8 font-normal">
+            Build your online presence with professional website development and explore useful digital products, subscriptions, AI tools and more.
           </p>
 
-          <!-- Focused Action CTAs (Clean, No Pill Gimmicks) -->
-          <div class="flex flex-wrap items-center gap-4 mb-10">
-            <a href="/shop" class="btn btn-primary text-sm sm:text-base px-7 py-3.5">
-              <span>Explore Store</span>
-              <LuArrowRight className="size-4 ml-2" />
+          <!-- Dual Focused Actions (60% Web Dev, 40% Store) -->
+          <div class="flex flex-wrap items-center gap-3.5 mb-8">
+            <!-- Primary CTA (Web Development) -->
+            <a
+              href="/web-development"
+              class="btn clay-btn-emerald font-bold text-sm sm:text-base px-6 sm:px-7 py-3 sm:py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all duration-150 active:scale-95"
+            >
+              <span>Get Your Website</span>
+              <LuArrowRight className="size-4" />
             </a>
-            <a href="/web-development" class="btn btn-outline text-sm sm:text-base px-7 py-3.5">
-              <span>View Website Services</span>
+
+            <!-- Secondary CTA (Digital Store) -->
+            <a
+              href="/shop"
+              class="btn clay-btn-dark font-semibold text-sm sm:text-base px-6 sm:px-7 py-3 sm:py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all duration-150 active:scale-95"
+            >
+              <span>Explore Digital Store</span>
             </a>
           </div>
 
-          <!-- Verified Value Strip (Clean, Authentic, Factual) -->
-          <div class="pt-6 border-t border-border flex flex-wrap items-center gap-6 sm:gap-8 text-xs sm:text-sm text-text-dark">
+          <!-- Verified Value Strip (Clean, Factual, Authentic) -->
+          <div class="pt-5 border-t border-border flex flex-wrap items-center gap-5 sm:gap-7 text-xs sm:text-sm text-[#A6B1C2]">
             <div class="flex items-center gap-2">
-              <LuZap className="size-4 text-primary shrink-0" />
-              <span>Fast Digital Access</span>
+              <LuCodeXml className="size-4 text-emerald-400 shrink-0" />
+              <span>Modern Code (Astro &amp; React)</span>
             </div>
             <div class="flex items-center gap-2">
-              <LuShieldCheck className="size-4 text-primary shrink-0" />
-              <span>Replacement Support on Plans</span>
+              <LuShieldCheck className="size-4 text-emerald-400 shrink-0" />
+              <span>Replacement Warranty on Plans</span>
             </div>
             <div class="flex items-center gap-2">
-              <LuHeadphones className="size-4 text-primary shrink-0" />
-              <span>Order Support via WhatsApp</span>
+              <LuHeadphones className="size-4 text-emerald-400 shrink-0" />
+              <span>WhatsApp Order Support</span>
             </div>
           </div>
         </div>
 
-        <!-- Right Hero Visual (6 Columns on Desktop) - Art-Directed Cinematic HeroVisual Composition -->
-        <div class="lg:col-span-6 relative mt-6 lg:mt-0 flex items-center justify-center">
-          <HeroVisual client:load />
+        <!-- Right Hero Visual (6 Columns on Desktop) - Art-Directed Dual Composition -->
+        <div class="lg:col-span-6 relative flex items-center justify-center">
+          <HeroVisualComposition client:load />
         </div>
 
       </div>
     </div>
   </section>
 
-  <!-- Image-Led Section ("Break the Template" / "Icons Out, Images In") -->
-  <section class="py-12 border-b border-border bg-light/30">
+  <!-- ========================================================================= -->
+  <!-- SECTION 3 — WEBSITE DEVELOPMENT SERVICES (Immediately After Hero)          -->
+  <!-- ========================================================================= -->
+  <section class="py-14 sm:py-16 lg:py-20 border-b border-border bg-[#0E1522]" id="services">
     <div class="container">
-      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+      <!-- Section Intro -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
         <div>
-          <span class="text-xs uppercase tracking-wider text-primary font-semibold block mb-1">Featured Essentials</span>
-          <h2 class="text-2xl sm:text-3xl font-bold text-white">Direct Access, Zero Guesswork</h2>
+          <span class="text-xs uppercase tracking-wider text-emerald-400 font-semibold block mb-1.5">
+            Website Studio Capabilities
+          </span>
+          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight">
+            Website Development Services
+          </h2>
         </div>
-        <p class="text-xs sm:text-sm text-text-dark max-w-md">
-          Real products and real deliverables. No generic icon boxes, no fake promises.
+        <p class="text-xs sm:text-sm text-[#A6B1C2] max-w-md leading-relaxed">
+          Clean, modern, and high-converting websites engineered from scratch with modern frameworks. No bloated page builders.
         </p>
       </div>
 
-      <!-- 3 Real Image-Led Preview Cards -->
+      <!-- 6-Grid of Actual TechNKT Services -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 mb-10">
+        {
+          WEB_SERVICES.map((s) => {
+            const IconComp = s.icon;
+            return (
+              <div class="p-5 sm:p-6 rounded-2xl clay-card-interactive flex flex-col justify-between group">
+                <div>
+                  <div class="size-11 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mb-4 transition-transform duration-200 group-hover:scale-105 shrink-0">
+                    <IconComp className="size-5.5" />
+                  </div>
+                  <h3 class="text-lg font-bold text-white mb-2 group-hover:text-emerald-400 transition-colors">
+                    {s.title}
+                  </h3>
+                  <p class="text-xs sm:text-sm text-[#A6B1C2] leading-relaxed mb-4">
+                    {s.description}
+                  </p>
+                </div>
+                <div class="pt-3 border-t border-white/[0.04] flex items-center justify-between">
+                  <a
+                    href={s.link}
+                    class="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-400 group-hover:text-emerald-300 transition-colors"
+                  >
+                    <span>View Details</span>
+                    <LuArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
+                  </a>
+                  <a
+                    href="/contact"
+                    class="text-[11px] font-medium text-[#A6B1C2] hover:text-white transition-colors"
+                  >
+                    Get Quote
+                  </a>
+                </div>
+              </div>
+            );
+          })
+        }
+      </div>
+
+      <!-- Section CTA -->
+      <div class="text-center pt-2">
+        <a
+          href="/web-development"
+          class="btn clay-btn-dark text-xs sm:text-sm px-6 py-3 rounded-xl inline-flex items-center gap-2 group transition-all"
+        >
+          <span>Explore All Website Services &amp; Packages</span>
+          <LuArrowRight className="size-4 text-emerald-400 transition-transform group-hover:translate-x-1" />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- SECTION 4 — DIGITAL STORE (Immediately After Website Services)             -->
+  <!-- ========================================================================= -->
+  <section class="py-14 sm:py-16 lg:py-20 border-b border-border bg-[#0B101A]" id="store">
+    <div class="container">
+      <!-- Section Intro -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+        <div>
+          <span class="text-xs uppercase tracking-wider text-emerald-400 font-semibold block mb-1.5">
+            Digital Marketplace
+          </span>
+          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight">
+            Explore Our Digital Store
+          </h2>
+        </div>
+        <p class="text-xs sm:text-sm text-[#A6B1C2] max-w-md leading-relaxed">
+          Direct digital delivery with replacement support throughout your plan term. Real passes, real deliverables.
+        </p>
+      </div>
+
+      <!-- Interactive Digital Store Showcase (Categories, Product Cards, Cart) -->
+      <HomeStoreShowcase client:load />
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- SECTION 5 — OUR WORK / PORTFOLIO                                           -->
+  <!-- ========================================================================= -->
+  <section class="py-14 sm:py-16 lg:py-20 border-b border-border bg-[#0E1522]" id="portfolio">
+    <div class="container">
+      <!-- Section Intro -->
+      <div class="text-center max-w-2xl mx-auto mb-10 sm:mb-12">
+        <span class="text-xs uppercase tracking-wider text-emerald-400 font-semibold block mb-1.5">
+          Proven Engineering
+        </span>
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight mb-3">
+          Modern Web Solutions Built for Performance
+        </h2>
+        <p class="text-xs sm:text-sm text-[#A6B1C2] leading-relaxed">
+          Every website we build is engineered with clean code, sub-second load times, and mobile-first responsiveness.
+        </p>
+      </div>
+
+      <!-- 3 Real Verified Architectural Archetype Cards -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {
+          PORTFOLIO_PROJECTS.map((proj) => (
+            <div class="rounded-2xl clay-card-interactive overflow-hidden flex flex-col justify-between group">
+              <div>
+                <div class="aspect-[16/10] overflow-hidden bg-black/50 relative">
+                  <img
+                    src={proj.image}
+                    alt={proj.title}
+                    class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                  <span class="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-black/85 backdrop-blur-md text-white text-[11px] font-semibold border border-white/10">
+                    {proj.category}
+                  </span>
+                </div>
+                <div class="p-5 sm:p-6">
+                  <!-- Tag row -->
+                  <div class="flex flex-wrap gap-1.5 mb-3">
+                    {proj.tags.map((tag) => (
+                      <span class="text-[10px] font-medium px-2 py-0.5 rounded bg-white/[0.04] text-[#A6B1C2] border border-white/5">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                  <h3 class="text-lg font-bold text-white mb-2 group-hover:text-emerald-400 transition-colors">
+                    {proj.title}
+                  </h3>
+                  <p class="text-xs sm:text-sm text-[#A6B1C2] leading-relaxed">
+                    {proj.description}
+                  </p>
+                </div>
+              </div>
+              <div class="p-5 sm:p-6 pt-0">
+                <a
+                  href={proj.link}
+                  class="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-400 group-hover:text-emerald-300 transition-colors"
+                >
+                  <span>Explore Capabilities</span>
+                  <LuArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
+                </a>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- SECTION 6 — HOW TECHNKT WORKS                                              -->
+  <!-- ========================================================================= -->
+  <section class="py-14 sm:py-16 lg:py-20 border-b border-border bg-[#0B101A]" id="how-it-works">
+    <div class="container">
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <span class="text-xs uppercase tracking-wider text-emerald-400 font-semibold block mb-1.5">
+          Transparent Process
+        </span>
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight mb-3">
+          How TechNKT Works
+        </h2>
+        <p class="text-xs sm:text-sm text-[#A6B1C2] leading-relaxed">
+          Simple, transparent workflows for both custom website development and digital store orders.
+        </p>
+      </div>
+
+      <!-- Two Side-by-Side Process Panels: Web Development & Digital Store -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
         
-        <!-- Card 1: Streaming Subscriptions -->
-        <a href="/shop?category=subscriptions" class="group rounded-2xl border border-border bg-light overflow-hidden hover:border-primary/40 transition-all duration-200 flex flex-col justify-between">
-          <div class="aspect-[16/10] overflow-hidden bg-black/40 relative">
-            <img
-              src="/images/products/netflix.jpg"
-              alt="Netflix Premium 4K Pass"
-              class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-            />
-            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-black/80 backdrop-blur-md text-white text-[11px] font-semibold border border-white/10">
-              Streaming Passes
-            </span>
-          </div>
-          <div class="p-6">
-            <h3 class="text-lg font-bold text-white mb-2 group-hover:text-primary transition-colors">
-              Premium Entertainment Subscriptions
-            </h3>
-            <p class="text-xs sm:text-sm text-text-dark leading-relaxed mb-4">
-              Private 4K UHD profiles with dedicated PINs for Netflix, Prime Video, and YouTube Premium.
-            </p>
-            <span class="text-xs font-semibold text-primary inline-flex items-center gap-1">
-              Explore Subscriptions <LuArrowRight className="size-3 transition-transform group-hover:translate-x-1" />
-            </span>
-          </div>
-        </a>
-
-        <!-- Card 2: Curated Ebooks -->
-        <a href="/ebook" class="group rounded-2xl border border-border bg-light overflow-hidden hover:border-primary/40 transition-all duration-200 flex flex-col justify-between">
-          <div class="aspect-[16/10] overflow-hidden bg-black/40 relative">
-            <img
-              src="/images/ebooks/digital-business-blueprint.jpg"
-              alt="Digital Business Blueprint Ebook"
-              class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-            />
-            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-black/80 backdrop-blur-md text-white text-[11px] font-semibold border border-white/10">
-              Digital Ebooks
-            </span>
-          </div>
-          <div class="p-6">
-            <h3 class="text-lg font-bold text-white mb-2 group-hover:text-primary transition-colors">
-              Battle-Tested Business Blueprints
-            </h3>
-            <p class="text-xs sm:text-sm text-text-dark leading-relaxed mb-4">
-              Step-by-step playbooks covering digital commerce, AI workflows, and automation templates.
-            </p>
-            <span class="text-xs font-semibold text-primary inline-flex items-center gap-1">
-              Browse Ebooks <LuArrowRight className="size-3 transition-transform group-hover:translate-x-1" />
-            </span>
-          </div>
-        </a>
-
-        <!-- Card 3: Custom Website Studio -->
-        <a href="/web-development" class="group rounded-2xl border border-border bg-light overflow-hidden hover:border-primary/40 transition-all duration-200 flex flex-col justify-between">
-          <div class="aspect-[16/10] overflow-hidden bg-black/40 relative">
-            <img
-              src="/images/technkt-webdev-showcase.jpg"
-              alt="Custom Website Development"
-              class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-            />
-            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-black/80 backdrop-blur-md text-white text-[11px] font-semibold border border-white/10">
-              Web Studio
-            </span>
-          </div>
-          <div class="p-6">
-            <h3 class="text-lg font-bold text-white mb-2 group-hover:text-primary transition-colors">
-              Custom Modern Web Development
-            </h3>
-            <p class="text-xs sm:text-sm text-text-dark leading-relaxed mb-4">
-              High-converting ecommerce storefronts, business sites, and landing pages built with clean code.
-            </p>
-            <span class="text-xs font-semibold text-primary inline-flex items-center gap-1">
-              View Web Services <LuArrowRight className="size-3 transition-transform group-hover:translate-x-1" />
-            </span>
-          </div>
-        </a>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- Trending Product Catalogue -->
-  <section class="section">
-    <div class="container">
-      <div class="mb-10 text-left">
-        <span class="text-xs uppercase tracking-wider text-primary font-semibold block mb-2">Marketplace Picks</span>
-        <h2 class="text-2xl sm:text-3xl font-bold text-white">Top Trending Passes</h2>
-        <p class="text-text-dark text-sm mt-1">Direct digital delivery with replacement support throughout your plan term.</p>
-      </div>
-      <ProductCards client:load />
-    </div>
-  </section>
-
-  <!-- Shop by Category / Plan Section -->
-  <section class="section pt-0 border-b border-border">
-    <div class="container">
-      <ShopByPlan client:load />
-    </div>
-  </section>
-
-  <!-- Ebooks Showcase -->
-  <EbooksShowcase client:load />
-
-  <!-- Website Development Services (9-Box Grid) -->
-  {
-    homepageData.our_features.enable && (
-      <Features our_features={homepageData.our_features} />
-    )
-  }
-
-  <!-- How It Works / Customer Journey (5 Simple Human Steps) -->
-  <BusinessNeeds />
-
-  <!-- Customer Reviews (Tasteful Social-Proof Invite - No Fake Reviews) -->
-  {
-    (homepageData.growth_process?.enable ?? true) && (
-      <section class="section pb-16 xl:pb-24 bg-transparent relative isolate overflow-hidden" id="customer-reviews">
-        <div class="container">
-          <div class="section-container">
-            <div class="section-intro centralize">
-              <h2
-                class="title"
-                set:html={markdownify(homepageData.growth_process?.title || "Real People. <strong>Real Experiences.</strong>")}
-              />
-              <p class="subtitle max-w-xl mx-auto">
-                <span class="font-hindi">{homepageData.growth_process?.subtitle || "Hum apni tareef khud nahi karenge... customers ko bolne do!"}</span>
-              </p>
+        <!-- Panel 1: Website Development Process -->
+        <div class="p-6 sm:p-8 rounded-2xl clay-card relative flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between pb-4 mb-6 border-b border-white/[0.06]">
+              <div class="flex items-center gap-2.5">
+                <div class="size-9 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                  <LuCodeXml className="size-4.5" />
+                </div>
+                <h3 class="text-lg font-bold text-white">Website Development</h3>
+              </div>
+              <span class="text-xs font-mono text-emerald-400 px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20">
+                Studio
+              </span>
             </div>
-            <div class="section-content">
-              <CustomerReviewsCarousel client:visible reviews={customerReviews} />
+
+            <!-- 4 Steps -->
+            <div class="space-y-5">
+              <div class="flex items-start gap-3.5">
+                <span class="size-6 rounded-full bg-white/[0.06] border border-white/10 text-emerald-400 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
+                  1
+                </span>
+                <div>
+                  <h4 class="text-sm font-bold text-white mb-0.5">Discuss Requirements</h4>
+                  <p class="text-xs text-[#A6B1C2] leading-relaxed">
+                    We clarify your exact business objectives, design aesthetic, required features, and timeline.
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-3.5">
+                <span class="size-6 rounded-full bg-white/[0.06] border border-white/10 text-emerald-400 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
+                  2
+                </span>
+                <div>
+                  <h4 class="text-sm font-bold text-white mb-0.5">Plan &amp; Design</h4>
+                  <p class="text-xs text-[#A6B1C2] leading-relaxed">
+                    We craft responsive wireframes and layout previews for your review and approval before coding begins.
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-3.5">
+                <span class="size-6 rounded-full bg-white/[0.06] border border-white/10 text-emerald-400 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
+                  3
+                </span>
+                <div>
+                  <h4 class="text-sm font-bold text-white mb-0.5">Modern Engineering</h4>
+                  <p class="text-xs text-[#A6B1C2] leading-relaxed">
+                    Built with clean code in Astro, React, and Tailwind CSS — fast, responsive, and secure with no bloated plugins.
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-3.5">
+                <span class="size-6 rounded-full bg-white/[0.06] border border-white/10 text-emerald-400 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
+                  4
+                </span>
+                <div>
+                  <h4 class="text-sm font-bold text-white mb-0.5">Launch &amp; Full Ownership</h4>
+                  <p class="text-xs text-[#A6B1C2] leading-relaxed">
+                    We connect your custom domain, set up SEO metadata, conduct cross-device testing, and hand over 100% code ownership.
+                  </p>
+                </div>
+              </div>
             </div>
+          </div>
+
+          <div class="mt-8 pt-5 border-t border-white/[0.06]">
+            <a
+              href="/contact"
+              class="w-full btn bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 border border-emerald-500/30 font-semibold text-xs sm:text-sm py-2.5 rounded-xl flex items-center justify-center gap-2 transition-colors"
+            >
+              <span>Discuss Your Web Project</span>
+              <LuArrowRight className="size-3.5" />
+            </a>
           </div>
         </div>
-      </section>
-    )
-  }
 
-  <!-- TechNKT Philosophy / CEO Letter Transformed -->
-  <OurStory />
+        <!-- Panel 2: Digital Store Process -->
+        <div class="p-6 sm:p-8 rounded-2xl clay-card relative flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between pb-4 mb-6 border-b border-white/[0.06]">
+              <div class="flex items-center gap-2.5">
+                <div class="size-9 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                  <LuShoppingCart className="size-4.5" />
+                </div>
+                <h3 class="text-lg font-bold text-white">Digital Store Orders</h3>
+              </div>
+              <span class="text-xs font-mono text-emerald-400 px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20">
+                Store
+              </span>
+            </div>
+
+            <!-- 4 Steps -->
+            <div class="space-y-5">
+              <div class="flex items-start gap-3.5">
+                <span class="size-6 rounded-full bg-white/[0.06] border border-white/10 text-emerald-400 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
+                  1
+                </span>
+                <div>
+                  <h4 class="text-sm font-bold text-white mb-0.5">Choose Product</h4>
+                  <p class="text-xs text-[#A6B1C2] leading-relaxed">
+                    Select your preferred subscription pass, combo pack, software tool, or curated ebook with transparent pricing.
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-3.5">
+                <span class="size-6 rounded-full bg-white/[0.06] border border-white/10 text-emerald-400 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
+                  2
+                </span>
+                <div>
+                  <h4 class="text-sm font-bold text-white mb-0.5">Place Order</h4>
+                  <p class="text-xs text-[#A6B1C2] leading-relaxed">
+                    Provide your contact details and preferred delivery channel (WhatsApp or Email) with zero hidden fees.
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-3.5">
+                <span class="size-6 rounded-full bg-white/[0.06] border border-white/10 text-emerald-400 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
+                  3
+                </span>
+                <div>
+                  <h4 class="text-sm font-bold text-white mb-0.5">Payment Confirmation</h4>
+                  <p class="text-xs text-[#A6B1C2] leading-relaxed">
+                    Complete payment smoothly via UPI QR, Google Pay, PhonePe, or Cards with verified payment status.
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-3.5">
+                <span class="size-6 rounded-full bg-white/[0.06] border border-white/10 text-emerald-400 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
+                  4
+                </span>
+                <div>
+                  <h4 class="text-sm font-bold text-white mb-0.5">Delivery / Order Update</h4>
+                  <p class="text-xs text-[#A6B1C2] leading-relaxed">
+                    Access credentials and setup details directly in your customer dashboard and registered WhatsApp with warranty support.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8 pt-5 border-t border-white/[0.06]">
+            <a
+              href="/shop"
+              class="w-full btn bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 border border-emerald-500/30 font-semibold text-xs sm:text-sm py-2.5 rounded-xl flex items-center justify-center gap-2 transition-colors"
+            >
+              <span>Browse Digital Store</span>
+              <LuArrowRight className="size-3.5" />
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- SECTION 7 — REVIEWS, FAQ & CONTACT                                         -->
+  <!-- ========================================================================= -->
+
+  <!-- Customer Reviews (Genuine Verified Reviews / Honest Feedback Invitation) -->
+  <section class="py-14 sm:py-16 lg:py-20 border-b border-border bg-[#0E1522]" id="reviews">
+    <div class="container">
+      <div class="text-center max-w-xl mx-auto mb-8">
+        <span class="text-xs uppercase tracking-wider text-emerald-400 font-semibold block mb-1.5">
+          Customer Trust
+        </span>
+        <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight mb-2">
+          Real People. Real Experiences.
+        </h2>
+        <p class="text-xs sm:text-sm text-[#A6B1C2]">
+          Authentic feedback from verified customers. No fake ratings, zero fabricated testimonials.
+        </p>
+      </div>
+
+      <CustomerReviewsCarousel client:visible reviews={customerReviews} />
+    </div>
+  </section>
 
   <!-- Frequently Asked Questions -->
-  <Faq />
+  <section class="py-14 sm:py-16 lg:py-20 border-b border-border bg-[#0B101A]" id="faq">
+    <div class="container">
+      <Faq />
+    </div>
+  </section>
 
-  <!-- Final Call To Action Banner -->
-  <CallToAction />
+  <!-- Final Call To Action & Contact Strip -->
+  <section class="py-16 sm:py-20 bg-gradient-to-b from-[#0B101A] to-[#0E1522]">
+    <div class="container">
+      <div class="rounded-3xl p-8 sm:p-12 lg:p-14 bg-[#151D2B] border border-border text-center max-w-4xl mx-auto relative overflow-hidden shadow-2xl">
+        <!-- Ambient highlight -->
+        <div class="pointer-events-none absolute -inset-2 -z-10 rounded-3xl opacity-30 blur-2xl bg-radial from-emerald-500/20 to-transparent"></div>
+
+        <span class="text-xs uppercase tracking-wider text-emerald-400 font-semibold block mb-2">
+          Start Your Project or Order Today
+        </span>
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4 tracking-tight">
+          Have a Project in Mind or Need Support?
+        </h2>
+        <p class="text-xs sm:text-sm sm:text-base text-[#A6B1C2] max-w-xl mx-auto mb-8 leading-relaxed">
+          Tell us about what you want to build or explore our digital store. We provide transparent quotes, realistic timelines, and dedicated human support.
+        </p>
+        <div class="flex flex-wrap gap-3.5 justify-center items-center">
+          <a
+            href="/contact"
+            class="btn clay-btn-emerald font-bold text-sm sm:text-base px-7 py-3 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95"
+          >
+            <span>Start a Conversation</span>
+            <LuArrowRight className="size-4" />
+          </a>
+          <a
+            href="/shop"
+            class="btn clay-btn-dark font-semibold text-sm sm:text-base px-7 py-3 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95"
+          >
+            <span>Explore Digital Store</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+  </div>
 </Base>

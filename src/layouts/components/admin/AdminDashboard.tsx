@@ -36,6 +36,7 @@ import SuppliersView from "./SuppliersView";
 import ProcurementView from "./ProcurementView";
 import FinanceView from "./FinanceView";
 import OrderDeskDrawer from "./OrderDeskDrawer";
+import SimpleProductModal from "./SimpleProductModal";
 
 type AdminTab = "dashboard" | "finance" | "orders" | "products" | "suppliers" | "procurement" | "marketing" | "bulk" | "audit";
 
@@ -517,6 +518,7 @@ function DashboardView({ onNavigate, showToast }: { onNavigate: (tab: AdminTab) 
 // ──────────────────────────────────────────
 function ProductsView({ showToast }: { showToast: any }) {
   const [products, setProducts] = useState<any[]>([]);
+  const [sellerSuggestions, setSellerSuggestions] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [editingProduct, setEditingProduct] = useState<any | null>(null);
@@ -528,7 +530,10 @@ function ProductsView({ showToast }: { showToast: any }) {
       const res = await fetch("/api/admin/products");
       const data = await res.json();
       if (data.success) {
-        setProducts(data.products);
+        setProducts(data.products || []);
+        if (Array.isArray(data.sellers)) {
+          setSellerSuggestions(data.sellers);
+        }
       }
     } catch {
       showToast("Failed to load products", "error");
@@ -542,7 +547,7 @@ function ProductsView({ showToast }: { showToast: any }) {
   }, []);
 
   const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`Are you sure you want to delete "${name}"? This will also remove its variants.`)) return;
+    if (!confirm(`Are you sure you want to delete "${name}"?`)) return;
     try {
       const res = await fetch(`/api/admin/products/${id}`, { method: "DELETE" });
       const data = await res.json();
@@ -558,8 +563,9 @@ function ProductsView({ showToast }: { showToast: any }) {
   };
 
   const filteredProducts = products.filter((p) =>
-    p.name.toLowerCase().includes(search.toLowerCase()) ||
-    p.category_id.toLowerCase().includes(search.toLowerCase())
+    (p.name || "").toLowerCase().includes(search.toLowerCase()) ||
+    (p.category_id || "").toLowerCase().includes(search.toLowerCase()) ||
+    (p.seller_name || "").toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -567,7 +573,7 @@ function ProductsView({ showToast }: { showToast: any }) {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#1E2837]">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-white">Product Catalogue</h1>
-          <p className="text-xs text-[#A6B1C2]">Manage products, duration variants, descriptions and imagery</p>
+          <p className="text-xs text-[#A6B1C2]">Simple, beginner-friendly product management with seller tracking and live card preview</p>
         </div>
 
         <div className="flex items-center gap-2">
@@ -576,23 +582,16 @@ function ProductsView({ showToast }: { showToast: any }) {
               setIsNew(true);
               setEditingProduct({
                 name: "",
-                slug: "",
                 category_id: "subscriptions",
-                image_url: "/images/products/netflix.jpg",
-                short_description: "",
+                image_url: "",
                 description: "",
-                badge: "INSTANT",
-                instant: 1,
+                duration: "",
+                seller_name: "",
                 status: "active",
-                featured: 0,
-                sort_order: 0,
-                marketing_title: "",
-                marketing_category: "🎬 OTT & Entertainment",
-                include_in_marketing: 1,
                 variants: [],
               });
             }}
-            className="px-3.5 py-2 rounded-xl bg-[#2965E8] hover:bg-[#3D75F0] text-xs font-semibold text-white flex items-center gap-1.5 transition-colors shadow-md shadow-blue-500/20 cursor-pointer"
+            className="px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold flex items-center gap-1.5 transition-all shadow-md shadow-emerald-500/20 cursor-pointer active:scale-95"
           >
             <LuPlus className="size-4" />
             <span>Add Product</span>
@@ -607,8 +606,8 @@ function ProductsView({ showToast }: { showToast: any }) {
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search products by name or category..."
-          className="w-full h-10 pl-9 pr-3 rounded-xl bg-[#151D2B] border border-[#1E2837] text-xs sm:text-sm text-white placeholder-[#A6B1C2]/60 focus:outline-none focus:border-[#2965E8]"
+          placeholder="Search products by name, category, or seller..."
+          className="w-full h-10 pl-9 pr-3 rounded-xl bg-[#151D2B] border border-[#1E2837] text-xs sm:text-sm text-white placeholder-[#A6B1C2]/60 focus:outline-none focus:border-emerald-500"
         />
       </div>
 
@@ -620,8 +619,8 @@ function ProductsView({ showToast }: { showToast: any }) {
               <tr>
                 <th className="py-3 px-4">Product</th>
                 <th className="py-3 px-4">Category</th>
-                <th className="py-3 px-4">Variants</th>
-                <th className="py-3 px-4">Price Range</th>
+                <th className="py-3 px-4">Seller (Internal)</th>
+                <th className="py-3 px-4">Price</th>
                 <th className="py-3 px-4">Status</th>
                 <th className="py-3 px-4 text-right">Actions</th>
               </tr>
@@ -630,22 +629,30 @@ function ProductsView({ showToast }: { showToast: any }) {
               {filteredProducts.map((p) => {
                 const minPrice = p.variants?.length
                   ? Math.min(...p.variants.map((v: any) => v.price_amount))
-                  : 0;
+                  : p.price_amount || 0;
                 const maxPrice = p.variants?.length
                   ? Math.max(...p.variants.map((v: any) => v.price_amount))
-                  : 0;
+                  : p.price_amount || 0;
                 return (
                   <tr key={p.id} className="hover:bg-white/[0.02] transition-colors">
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-3">
-                        <img
-                          src={p.image_url}
-                          alt={p.name}
-                          className="size-10 rounded-lg object-cover bg-black/40 border border-white/5 shrink-0"
-                        />
+                        {p.image_url ? (
+                          <img
+                            src={p.image_url}
+                            alt={p.name}
+                            className="size-10 rounded-lg object-cover bg-black/40 border border-white/5 shrink-0"
+                          />
+                        ) : (
+                          <div className="size-10 rounded-lg bg-white/5 border border-white/5 shrink-0 flex items-center justify-center text-xs text-[#A6B1C2]">
+                            —
+                          </div>
+                        )}
                         <div>
-                          <div className="font-semibold text-white">{p.name}</div>
-                          <div className="text-[11px] text-[#A6B1C2] line-clamp-1">{p.short_description || p.slug}</div>
+                          <div className="font-semibold text-white">
+                            {p.name || <span className="italic text-[#A6B1C2]/60">Untitled Draft</span>}
+                          </div>
+                          <div className="text-[11px] text-[#A6B1C2] line-clamp-1">{p.short_description || p.description || p.slug}</div>
                         </div>
                       </div>
                     </td>
@@ -655,10 +662,16 @@ function ProductsView({ showToast }: { showToast: any }) {
                       </span>
                     </td>
                     <td className="py-3 px-4">
-                      <span className="font-medium text-white">{p.variants?.length || 0} plans</span>
+                      {p.seller_name ? (
+                        <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                          {p.seller_name}
+                        </span>
+                      ) : (
+                        <span className="text-[11px] text-[#A6B1C2]/60 italic">Not assigned</span>
+                      )}
                     </td>
                     <td className="py-3 px-4 font-bold text-white">
-                      {minPrice === maxPrice ? `₹${minPrice}` : `₹${minPrice} – ₹${maxPrice}`}
+                      {minPrice > 0 ? (minPrice === maxPrice ? `₹${minPrice}` : `₹${minPrice} – ₹${maxPrice}`) : <span className="text-emerald-400 text-xs font-semibold">Ask for Price</span>}
                     </td>
                     <td className="py-3 px-4">
                       <span
@@ -678,7 +691,7 @@ function ProductsView({ showToast }: { showToast: any }) {
                             setIsNew(false);
                             setEditingProduct({ ...p });
                           }}
-                          className="p-1.5 rounded-lg bg-white/5 hover:bg-[#2965E8]/20 text-white hover:text-[#2965E8] transition-colors cursor-pointer"
+                          className="p-1.5 rounded-lg bg-white/5 hover:bg-emerald-500/20 text-white hover:text-emerald-400 transition-colors cursor-pointer"
                           title="Edit Product"
                         >
                           <LuPencil className="size-4" />
@@ -700,16 +713,16 @@ function ProductsView({ showToast }: { showToast: any }) {
         </div>
       </div>
 
-      {/* Product Edit / Create Modal */}
+      {/* Simplified Product Form Modal with Real-Time Live Preview */}
       {editingProduct && (
-        <ProductEditModal
+        <SimpleProductModal
           product={editingProduct}
           isNew={isNew}
+          sellerSuggestions={sellerSuggestions}
           onClose={() => setEditingProduct(null)}
           onSaved={() => {
             setEditingProduct(null);
             fetchProducts();
-            showToast(isNew ? "Product created successfully" : "Product updated successfully");
           }}
           showToast={showToast}
         />
@@ -718,751 +731,6 @@ function ProductsView({ showToast }: { showToast: any }) {
   );
 }
 
-// ──────────────────────────────────────────
-// 2B. PRODUCT EDIT MODAL (With Variants & Image Preview)
-// ──────────────────────────────────────────
-function ProductEditModal({
-  product,
-  isNew,
-  onClose,
-  onSaved,
-  showToast,
-}: {
-  product: any;
-  isNew: boolean;
-  onClose: () => void;
-  onSaved: () => void;
-  showToast: any;
-}) {
-  const [formData, setFormData] = useState({ ...product });
-  const [activeSubTab, setActiveSubTab] = useState<"basics" | "variants" | "suppliers" | "image" | "marketing">("basics");
-  const [variants, setVariants] = useState<any[]>(product.variants || []);
-  const [saving, setSaving] = useState(false);
-  const [uploadingImage, setUploadingImage] = useState(false);
-
-  // Supplier offers state
-  const [availableSuppliers, setAvailableSuppliers] = useState<any[]>([]);
-  const [variantOffers, setVariantOffers] = useState<Record<string, { supplierId: string; purchaseCost: number; altSupplierId?: string }>>({});
-  const [savingOffer, setSavingOffer] = useState(false);
-
-  useEffect(() => {
-    fetch("/api/admin/suppliers?status=active")
-      .then((r) => r.json())
-      .then((d) => {
-        if (d.success && Array.isArray(d.suppliers)) {
-          setAvailableSuppliers(d.suppliers);
-        }
-      })
-      .catch(() => {});
-
-    if (formData.id) {
-      fetch(`/api/admin/offers?productId=${encodeURIComponent(formData.id)}`)
-        .then((r) => r.json())
-        .then((d) => {
-          if (d.success && Array.isArray(d.offers)) {
-            const mapped: Record<string, any> = {};
-            d.offers.forEach((o: any) => {
-              if (o.preferred) {
-                mapped[o.variant_id] = {
-                  supplierId: o.supplier_id,
-                  purchaseCost: o.purchase_price_amount,
-                };
-              }
-            });
-            setVariantOffers(mapped);
-          }
-        })
-        .catch(() => {});
-    }
-  }, [formData.id]);
-
-  const handleSaveOffer = async (variantId: string) => {
-    const offer = variantOffers[variantId];
-    if (!offer?.supplierId || offer.purchaseCost === undefined || isNaN(offer.purchaseCost)) {
-      showToast("Please select a preferred supplier and enter a valid purchase cost.", "error");
-      return;
-    }
-    setSavingOffer(true);
-    try {
-      const res = await fetch("/api/admin/offers", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          productId: formData.id,
-          variantId,
-          supplierId: offer.supplierId,
-          purchasePriceAmount: Number(offer.purchaseCost),
-          preferred: true,
-          availability: "in_stock",
-          notes: (offer as any).notes || "",
-        }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        showToast("Supplier cost saved for variant!");
-      } else {
-        showToast(data.error || "Failed to save supplier offer", "error");
-      }
-    } catch {
-      showToast("Network error saving offer", "error");
-    } finally {
-      setSavingOffer(false);
-    }
-  };
-
-  // New variant draft
-  const [newVariant, setNewVariant] = useState({
-    variant_name: "1 Month",
-    duration_value: 1,
-    duration_unit: "month",
-    price_amount: 99,
-    comparison_price_amount: 199,
-    validity_description: "30 Days Streaming",
-    warranty_description: "Full Term Replacement Warranty",
-    delivery_description: "Instant Auto-Delivery via WhatsApp / Email",
-    activation_description: "Private Profile with PIN",
-    availability: "in_stock",
-  });
-
-  const handleSaveProduct = async () => {
-    if (!formData.name || !formData.category_id || !formData.image_url) {
-      showToast("Name, category, and image URL are required.", "error");
-      return;
-    }
-
-    try {
-      setSaving(true);
-      const url = isNew ? "/api/admin/products" : `/api/admin/products/${formData.id}`;
-      const method = isNew ? "POST" : "PUT";
-
-      const res = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-      const data = await res.json();
-
-      if (!res.ok || !data.success) {
-        showToast(data.error || "Save failed", "error");
-        setSaving(false);
-        return;
-      }
-
-      onSaved();
-    } catch {
-      showToast("Request failed", "error");
-      setSaving(false);
-    }
-  };
-
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    try {
-      setUploadingImage(true);
-      const uploadForm = new FormData();
-      uploadForm.append("file", file);
-
-      const res = await fetch("/api/admin/upload", {
-        method: "POST",
-        body: uploadForm,
-      });
-      const data = await res.json();
-
-      if (data.success && data.url) {
-        setFormData({ ...formData, image_url: data.url });
-        showToast("Image uploaded and preview updated");
-      } else {
-        showToast(data.error || "Upload failed", "error");
-      }
-    } catch {
-      showToast("Failed to upload image", "error");
-    } finally {
-      setUploadingImage(false);
-    }
-  };
-
-  const handleAddVariant = async () => {
-    if (isNew) {
-      showToast("Please save the product first before adding individual variants.", "error");
-      return;
-    }
-
-    try {
-      const res = await fetch("/api/admin/variants", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...newVariant,
-          product_id: formData.id,
-        }),
-      });
-      const data = await res.json();
-      if (data.success && data.variant) {
-        setVariants([...variants, data.variant]);
-        showToast("Variant added successfully");
-      } else {
-        showToast(data.error || "Failed to add variant", "error");
-      }
-    } catch {
-      showToast("Error adding variant", "error");
-    }
-  };
-
-  const handleDeleteVariant = async (variantId: string) => {
-    if (!confirm("Delete this variant?")) return;
-    try {
-      const res = await fetch(`/api/admin/variants/${variantId}`, { method: "DELETE" });
-      const data = await res.json();
-      if (data.success) {
-        setVariants(variants.filter((v) => v.id !== variantId));
-        showToast("Variant deleted");
-      }
-    } catch {
-      showToast("Failed to delete variant", "error");
-    }
-  };
-
-  return (
-    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
-      <div className="bg-[#151D2B] border border-[#1E2837] rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
-        {/* Modal Header */}
-        <div className="p-4 sm:p-5 border-b border-[#1E2837] flex items-center justify-between bg-[#111724]">
-          <div>
-            <h2 className="text-base sm:text-lg font-bold text-white">
-              {isNew ? "Add New Product" : `Edit Product: ${formData.name}`}
-            </h2>
-            <span className="text-xs text-[#A6B1C2]">Single source of truth in database</span>
-          </div>
-          <button onClick={onClose} className="p-1 rounded-lg text-[#A6B1C2] hover:text-white cursor-pointer">
-            <LuX className="size-5" />
-          </button>
-        </div>
-
-        {/* Sub-tab navigation */}
-        <div className="flex border-b border-[#1E2837] bg-[#0E1522] px-4 gap-2 text-xs">
-          <button
-            onClick={() => setActiveSubTab("basics")}
-            className={`py-2.5 px-3 font-semibold border-b-2 cursor-pointer transition-colors ${
-              activeSubTab === "basics"
-                ? "border-[#2965E8] text-white"
-                : "border-transparent text-[#A6B1C2] hover:text-white"
-            }`}
-          >
-            Product Basics
-          </button>
-          <button
-            onClick={() => setActiveSubTab("variants")}
-            className={`py-2.5 px-3 font-semibold border-b-2 cursor-pointer transition-colors ${
-              activeSubTab === "variants"
-                ? "border-[#2965E8] text-white"
-                : "border-transparent text-[#A6B1C2] hover:text-white"
-            }`}
-          >
-            Pricing & Variants ({variants.length})
-          </button>
-          <button
-            onClick={() => setActiveSubTab("suppliers")}
-            className={`py-2.5 px-3 font-semibold border-b-2 cursor-pointer transition-colors ${
-              activeSubTab === "suppliers"
-                ? "border-[#2965E8] text-white"
-                : "border-transparent text-[#A6B1C2] hover:text-white"
-            }`}
-          >
-            Supplier & Purchase Cost
-          </button>
-          <button
-            onClick={() => setActiveSubTab("image")}
-            className={`py-2.5 px-3 font-semibold border-b-2 cursor-pointer transition-colors ${
-              activeSubTab === "image"
-                ? "border-[#2965E8] text-white"
-                : "border-transparent text-[#A6B1C2] hover:text-white"
-            }`}
-          >
-            Image Manager & Card Mockup
-          </button>
-          <button
-            onClick={() => setActiveSubTab("marketing")}
-            className={`py-2.5 px-3 font-semibold border-b-2 cursor-pointer transition-colors ${
-              activeSubTab === "marketing"
-                ? "border-[#2965E8] text-white"
-                : "border-transparent text-[#A6B1C2] hover:text-white"
-            }`}
-          >
-            WhatsApp Marketing Copy
-          </button>
-        </div>
-
-        {/* Modal Body */}
-        <div className="p-4 sm:p-6 overflow-y-auto space-y-4 flex-1">
-          {/* TAB 1: BASICS */}
-          {activeSubTab === "basics" && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-semibold text-[#A6B1C2] mb-1">Product Name</label>
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="e.g. Netflix Premium 4K"
-                  className="w-full h-9 px-3 rounded-xl bg-[#0B101A] border border-[#1E2837] text-xs text-white focus:outline-none focus:border-[#2965E8]"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-[#A6B1C2] mb-1">Slug (URL friendly)</label>
-                <input
-                  type="text"
-                  value={formData.slug}
-                  onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                  placeholder="e.g. netflix-4k"
-                  className="w-full h-9 px-3 rounded-xl bg-[#0B101A] border border-[#1E2837] text-xs text-white focus:outline-none focus:border-[#2965E8]"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-[#A6B1C2] mb-1">Category</label>
-                <select
-                  value={formData.category_id}
-                  onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
-                  className="w-full h-9 px-3 rounded-xl bg-[#0B101A] border border-[#1E2837] text-xs text-white focus:outline-none focus:border-[#2965E8]"
-                >
-                  <option value="subscriptions">Subscriptions</option>
-                  <option value="combo-packs">Combo Packs</option>
-                  <option value="software">Software & AI</option>
-                  <option value="music">Music</option>
-                  <option value="ebooks">Ebooks</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-[#A6B1C2] mb-1">Store Status</label>
-                <select
-                  value={formData.status}
-                  onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                  className="w-full h-9 px-3 rounded-xl bg-[#0B101A] border border-[#1E2837] text-xs text-white focus:outline-none focus:border-[#2965E8]"
-                >
-                  <option value="active">Active (Visible in Store)</option>
-                  <option value="draft">Draft (Hidden)</option>
-                  <option value="archived">Archived / Unavailable</option>
-                </select>
-              </div>
-
-              <div className="sm:col-span-2">
-                <label className="block text-xs font-semibold text-[#A6B1C2] mb-1">Short Description (Card Subtitle)</label>
-                <input
-                  type="text"
-                  value={formData.short_description || ""}
-                  onChange={(e) => setFormData({ ...formData, short_description: e.target.value })}
-                  placeholder="e.g. Dedicated private profile with 4-digit PIN for 4K UHD streaming."
-                  className="w-full h-9 px-3 rounded-xl bg-[#0B101A] border border-[#1E2837] text-xs text-white focus:outline-none focus:border-[#2965E8]"
-                />
-              </div>
-
-              <div className="sm:col-span-2">
-                <label className="block text-xs font-semibold text-[#A6B1C2] mb-1">Full Description & Plan Terms</label>
-                <textarea
-                  rows={4}
-                  value={formData.description || ""}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Detailed instructions, device compatibility, terms, and delivery promises..."
-                  className="w-full p-3 rounded-xl bg-[#0B101A] border border-[#1E2837] text-xs text-white focus:outline-none focus:border-[#2965E8]"
-                />
-              </div>
-
-              <div className="flex items-center gap-4">
-                <label className="flex items-center gap-2 cursor-pointer text-xs">
-                  <input
-                    type="checkbox"
-                    checked={Boolean(formData.featured)}
-                    onChange={(e) => setFormData({ ...formData, featured: e.target.checked ? 1 : 0 })}
-                    className="rounded bg-[#0B101A] border-[#1E2837] text-[#2965E8]"
-                  />
-                  <span>Mark Featured</span>
-                </label>
-
-                <label className="flex items-center gap-2 cursor-pointer text-xs">
-                  <input
-                    type="checkbox"
-                    checked={Boolean(formData.instant)}
-                    onChange={(e) => setFormData({ ...formData, instant: e.target.checked ? 1 : 0 })}
-                    className="rounded bg-[#0B101A] border-[#1E2837] text-[#2965E8]"
-                  />
-                  <span>Show Instant Delivery Badge</span>
-                </label>
-              </div>
-            </div>
-          )}
-
-          {/* TAB 2: VARIANTS */}
-          {activeSubTab === "variants" && (
-            <div className="space-y-5">
-              <div className="text-xs text-[#A6B1C2]">
-                Configure duration plans (e.g. 1 Month, 6 Months, 1 Year). Each variant has its own price, warranty terms, and validity.
-              </div>
-
-              {/* Existing Variants Table */}
-              <div className="border border-[#1E2837] rounded-xl overflow-hidden bg-[#0B101A]">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-[#111724] text-[#A6B1C2] border-b border-[#1E2837]">
-                    <tr>
-                      <th className="py-2.5 px-3">Plan Name</th>
-                      <th className="py-2.5 px-3">Duration</th>
-                      <th className="py-2.5 px-3">Price</th>
-                      <th className="py-2.5 px-3">Warranty</th>
-                      <th className="py-2.5 px-3">Delivery</th>
-                      <th className="py-2.5 px-3 text-right">Delete</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#1E2837]">
-                    {variants.map((v) => (
-                      <tr key={v.id}>
-                        <td className="py-2.5 px-3 font-semibold text-white">{v.variant_name}</td>
-                        <td className="py-2.5 px-3">{v.duration_value} {v.duration_unit}</td>
-                        <td className="py-2.5 px-3 font-bold text-emerald-400">₹{v.price_amount}</td>
-                        <td className="py-2.5 px-3 text-[#A6B1C2]">{v.warranty_description || "None"}</td>
-                        <td className="py-2.5 px-3 text-[#A6B1C2]">{v.delivery_description || "Instant"}</td>
-                        <td className="py-2.5 px-3 text-right">
-                          <button
-                            onClick={() => handleDeleteVariant(v.id)}
-                            className="p-1 rounded text-rose-400 hover:bg-rose-500/10 cursor-pointer"
-                          >
-                            <LuTrash2 className="size-3.5" />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                    {variants.length === 0 && (
-                      <tr>
-                        <td colSpan={6} className="py-4 text-center text-[#A6B1C2]">
-                          No variants yet. Add your first duration plan below.
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Add Variant Form */}
-              <div className="p-4 rounded-xl bg-[#111724] border border-[#1E2837] space-y-3">
-                <h4 className="text-xs font-bold text-white flex items-center gap-1.5">
-                  <LuPlus className="size-3.5 text-[#2965E8]" />
-                  <span>Add New Duration Plan</span>
-                </h4>
-
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-                  <div>
-                    <label className="block text-[#A6B1C2] mb-1">Plan Name</label>
-                    <input
-                      type="text"
-                      value={newVariant.variant_name}
-                      onChange={(e) => setNewVariant({ ...newVariant, variant_name: e.target.value })}
-                      placeholder="e.g. 1 Month"
-                      className="w-full h-8 px-2.5 rounded-lg bg-[#0B101A] border border-[#1E2837] text-white"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[#A6B1C2] mb-1">Duration Value</label>
-                    <input
-                      type="number"
-                      value={newVariant.duration_value}
-                      onChange={(e) => setNewVariant({ ...newVariant, duration_value: Number(e.target.value) })}
-                      className="w-full h-8 px-2.5 rounded-lg bg-[#0B101A] border border-[#1E2837] text-white"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[#A6B1C2] mb-1">Unit</label>
-                    <select
-                      value={newVariant.duration_unit}
-                      onChange={(e) => setNewVariant({ ...newVariant, duration_unit: e.target.value })}
-                      className="w-full h-8 px-2 rounded-lg bg-[#0B101A] border border-[#1E2837] text-white"
-                    >
-                      <option value="month">Months</option>
-                      <option value="year">Years</option>
-                      <option value="day">Days</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-[#A6B1C2] mb-1">Price (₹ INR)</label>
-                    <input
-                      type="number"
-                      value={newVariant.price_amount}
-                      onChange={(e) => setNewVariant({ ...newVariant, price_amount: Number(e.target.value) })}
-                      className="w-full h-8 px-2.5 rounded-lg bg-[#0B101A] border border-[#1E2837] text-white font-bold"
-                    />
-                  </div>
-
-                  <div className="sm:col-span-2">
-                    <label className="block text-[#A6B1C2] mb-1">Warranty Terms</label>
-                    <input
-                      type="text"
-                      value={newVariant.warranty_description}
-                      onChange={(e) => setNewVariant({ ...newVariant, warranty_description: e.target.value })}
-                      placeholder="e.g. 30 Days Replacement Warranty"
-                      className="w-full h-8 px-2.5 rounded-lg bg-[#0B101A] border border-[#1E2837] text-white"
-                    />
-                  </div>
-
-                  <div className="sm:col-span-2">
-                    <label className="block text-[#A6B1C2] mb-1">Delivery Channel</label>
-                    <input
-                      type="text"
-                      value={newVariant.delivery_description}
-                      onChange={(e) => setNewVariant({ ...newVariant, delivery_description: e.target.value })}
-                      placeholder="e.g. Instant Delivery via WhatsApp / Email"
-                      className="w-full h-8 px-2.5 rounded-lg bg-[#0B101A] border border-[#1E2837] text-white"
-                    />
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={handleAddVariant}
-                  className="px-3 py-1.5 rounded-lg bg-[#2965E8] text-white text-xs font-semibold flex items-center gap-1 cursor-pointer"
-                >
-                  <LuPlus className="size-3.5" />
-                  <span>Save Plan Variant</span>
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* TAB: SUPPLIER & PURCHASE COST */}
-          {activeSubTab === "suppliers" && (
-            <div className="space-y-5">
-              <div className="p-3.5 rounded-xl bg-blue-950/30 border border-blue-500/30 text-xs text-blue-200 flex items-start gap-2.5">
-                <LuShieldCheck className="size-4 shrink-0 text-blue-400 mt-0.5" />
-                <div>
-                  <span className="font-bold text-white block">Strict Privacy Guarantee</span>
-                  Supplier names and purchase costs are strictly confidential. They are NEVER visible in the storefront, customer cart, customer dashboard, or WhatsApp marketing posts.
-                </div>
-              </div>
-
-              {availableSuppliers.length === 0 ? (
-                <div className="p-6 rounded-xl bg-[#0B101A] border border-[#1E2837] text-center space-y-2">
-                  <p className="text-xs text-[#A6B1C2]">No active suppliers found in your directory.</p>
-                  <p className="text-[11px] text-white">Create your digital suppliers first in the Suppliers menu to assign them here.</p>
-                </div>
-              ) : variants.length === 0 ? (
-                <div className="p-6 rounded-xl bg-[#0B101A] border border-[#1E2837] text-center">
-                  <p className="text-xs text-[#A6B1C2]">Please add at least one product plan/variant under "Pricing & Variants" first.</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  <div className="text-xs text-[#A6B1C2]">
-                    Link each variant to its preferred procurement supplier and configure your real acquisition cost to track gross profit.
-                  </div>
-
-                  <div className="space-y-3">
-                    {variants.map((v) => {
-                      const offer = variantOffers[v.id] || { supplierId: "", purchaseCost: 0 };
-                      const sellingPrice = v.price_amount || 0;
-                      const purchaseCost = offer.purchaseCost || 0;
-                      const estimatedGrossProfit = sellingPrice - purchaseCost;
-                      const marginPercent = sellingPrice > 0 ? ((estimatedGrossProfit / sellingPrice) * 100).toFixed(1) : "0.0";
-
-                      return (
-                        <div key={v.id} className="p-4 rounded-xl bg-[#0B101A] border border-[#1E2837] space-y-3">
-                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#1E2837] pb-2.5">
-                            <div>
-                              <span className="text-xs font-bold text-white">{v.variant_name}</span>
-                              <span className="text-[11px] text-[#A6B1C2] ml-2">({v.duration_value} {v.duration_unit})</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <span className="text-[11px] text-[#A6B1C2]">Public Selling Price:</span>
-                              <span className="text-xs font-bold text-white">₹{sellingPrice}</span>
-                            </div>
-                          </div>
-
-                          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 items-end">
-                            <div>
-                              <label className="block text-[11px] font-semibold text-[#A6B1C2] mb-1">Preferred Supplier</label>
-                              <select
-                                value={offer.supplierId || ""}
-                                onChange={(e) => {
-                                  setVariantOffers({
-                                    ...variantOffers,
-                                    [v.id]: { ...offer, supplierId: e.target.value },
-                                  });
-                                }}
-                                className="w-full h-8 px-2.5 rounded-lg bg-[#151D2B] border border-[#1E2837] text-xs text-white"
-                              >
-                                <option value="">Select Supplier...</option>
-                                {availableSuppliers.map((s) => (
-                                  <option key={s.id} value={s.id}>
-                                    {s.name} {s.contact_person ? `(${s.contact_person})` : ""}
-                                  </option>
-                                ))}
-                              </select>
-                            </div>
-
-                            <div>
-                              <label className="block text-[11px] font-semibold text-[#A6B1C2] mb-1">Purchase Cost (₹)</label>
-                              <input
-                                type="number"
-                                min="0"
-                                value={offer.purchaseCost ?? ""}
-                                onChange={(e) => {
-                                  setVariantOffers({
-                                    ...variantOffers,
-                                    [v.id]: { ...offer, purchaseCost: parseFloat(e.target.value) || 0 },
-                                  });
-                                }}
-                                placeholder="e.g. 120"
-                                className="w-full h-8 px-2.5 rounded-lg bg-[#151D2B] border border-[#1E2837] text-xs text-white"
-                              />
-                            </div>
-
-                            <div>
-                              <label className="block text-[11px] font-semibold text-[#A6B1C2] mb-1">Estimated Gross Profit</label>
-                              <div className="h-8 px-2.5 rounded-lg bg-[#151D2B] border border-[#1E2837] flex items-center justify-between text-xs">
-                                <span className={estimatedGrossProfit >= 0 ? "font-bold text-emerald-400" : "font-bold text-rose-400"}>
-                                  ₹{estimatedGrossProfit}
-                                </span>
-                                <span className="text-[10px] text-[#A6B1C2]">({marginPercent}%)</span>
-                              </div>
-                            </div>
-
-                            <div>
-                              <button
-                                type="button"
-                                disabled={savingOffer}
-                                onClick={() => handleSaveOffer(v.id)}
-                                className="w-full h-8 px-3 rounded-lg bg-[#2965E8] hover:bg-[#3D75F0] text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
-                              >
-                                <LuCheck className="size-3.5" />
-                                <span>Save Cost</span>
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* TAB 3: IMAGE MANAGER & PREVIEW */}
-          {activeSubTab === "image" && (
-            <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Upload & Settings */}
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-[#A6B1C2] mb-1">Image URL</label>
-                    <input
-                      type="text"
-                      value={formData.image_url}
-                      onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                      className="w-full h-9 px-3 rounded-xl bg-[#0B101A] border border-[#1E2837] text-xs text-white"
-                    />
-                  </div>
-
-                  {/* Drag & Drop Upload Button */}
-                  <div className="border-2 border-dashed border-[#1E2837] hover:border-[#2965E8] rounded-2xl p-6 text-center transition-colors">
-                    <LuCloudUpload className="size-8 mx-auto text-[#2965E8] mb-2" />
-                    <p className="text-xs font-semibold text-white mb-1">Upload High-Resolution Product Artwork</p>
-                    <p className="text-[11px] text-[#A6B1C2] mb-3">Supports PNG, JPEG, WebP up to 5MB</p>
-                    <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#2965E8] text-white text-xs font-semibold cursor-pointer">
-                      <span>{uploadingImage ? "Uploading..." : "Choose File"}</span>
-                      <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
-                    </label>
-                  </div>
-                </div>
-
-                {/* Real Mockup Preview in TechNKT Product Card */}
-                <div>
-                  <h4 className="text-xs font-bold text-white mb-2">Live Storefront Card Preview</h4>
-                  <div className="w-48 mx-auto rounded-xl sm:rounded-2xl p-3 bg-[#151D2B] border border-[#1E2837] shadow-lg">
-                    <div className="relative w-full aspect-square rounded-lg overflow-hidden mb-2.5 bg-[#0B101A] border border-white/5 flex items-center justify-center">
-                      <img
-                        src={formData.image_url}
-                        alt="Preview"
-                        className="w-full h-full object-cover"
-                      />
-                      {formData.instant && (
-                        <div className="absolute top-2 right-2 px-1.5 py-0.5 rounded bg-black/80 border border-amber-400/40 text-[9px] font-bold text-amber-300 flex items-center gap-0.5">
-                          <LuZap className="text-[10px] text-amber-400" />
-                          <span>INSTANT</span>
-                        </div>
-                      )}
-                    </div>
-                    <div className="text-xs font-semibold text-[#F4F6FA] line-clamp-1 mb-1">
-                      {formData.name || "Product Name"}
-                    </div>
-                    <div className="text-sm font-extrabold text-[#F4F6FA] mb-2">
-                      ₹{variants[0]?.price_amount || 99}
-                    </div>
-                    <div className="h-7 rounded-lg bg-[#2965E8] text-white text-[11px] font-semibold flex items-center justify-center">
-                      Buy now
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* TAB 4: MARKETING */}
-          {activeSubTab === "marketing" && (
-            <div className="space-y-4">
-              <label className="flex items-center gap-2 cursor-pointer text-xs">
-                <input
-                  type="checkbox"
-                  checked={Boolean(formData.include_in_marketing)}
-                  onChange={(e) => setFormData({ ...formData, include_in_marketing: e.target.checked ? 1 : 0 })}
-                  className="rounded bg-[#0B101A] border-[#1E2837] text-[#2965E8]"
-                />
-                <span className="font-semibold text-white">Include in WhatsApp Promotional Posts</span>
-              </label>
-
-              <div>
-                <label className="block text-xs font-semibold text-[#A6B1C2] mb-1">Marketing Category Header</label>
-                <input
-                  type="text"
-                  value={formData.marketing_category || ""}
-                  onChange={(e) => setFormData({ ...formData, marketing_category: e.target.value })}
-                  placeholder="e.g. 🎬 OTT & Entertainment, 🤖 AI Tools"
-                  className="w-full h-9 px-3 rounded-xl bg-[#0B101A] border border-[#1E2837] text-xs text-white"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-[#A6B1C2] mb-1">Marketing Display Title</label>
-                <input
-                  type="text"
-                  value={formData.marketing_title || ""}
-                  onChange={(e) => setFormData({ ...formData, marketing_title: e.target.value })}
-                  placeholder="e.g. Netflix 4K (1 Screen)"
-                  className="w-full h-9 px-3 rounded-xl bg-[#0B101A] border border-[#1E2837] text-xs text-white"
-                />
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Modal Footer */}
-        <div className="p-4 border-t border-[#1E2837] flex items-center justify-end gap-3 bg-[#111724]">
-          <button onClick={onClose} className="px-4 py-2 rounded-xl text-xs text-[#A6B1C2] hover:text-white cursor-pointer">
-            Cancel
-          </button>
-          <button
-            onClick={handleSaveProduct}
-            disabled={saving}
-            className="px-5 py-2 rounded-xl bg-[#2965E8] hover:bg-[#3D75F0] text-white text-xs font-semibold flex items-center gap-1.5 shadow-md shadow-blue-500/20 cursor-pointer disabled:opacity-50"
-          >
-            <span>{saving ? "Saving..." : "Save Product"}</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 // ──────────────────────────────────────────
 // 3. ORDERS VIEW (Statuses, Contacts, Fulfillment)
@@ -1553,11 +821,10 @@ function OrdersView({ showToast }: { showToast: any }) {
           <table className="w-full text-left text-xs">
             <thead className="bg-[#111724] text-[#A6B1C2] border-b border-[#1E2837]">
               <tr>
-                <th className="py-3 px-4">Reference</th>
-                <th className="py-3 px-4">Date</th>
+                <th className="py-3 px-4">Order Ref</th>
                 <th className="py-3 px-4">Customer Contact</th>
+                <th className="py-3 px-4">Product(s) &amp; Seller (Internal)</th>
                 <th className="py-3 px-4">Delivery Channel</th>
-                <th className="py-3 px-4">Items</th>
                 <th className="py-3 px-4">Total</th>
                 <th className="py-3 px-4">Status</th>
                 <th className="py-3 px-4 text-right">Action</th>
@@ -1566,21 +833,50 @@ function OrdersView({ showToast }: { showToast: any }) {
             <tbody className="divide-y divide-[#1E2837]">
               {orders.map((ord) => (
                 <tr key={ord.id} className="hover:bg-white/[0.02] transition-colors">
-                  <td className="py-3 px-4 font-mono font-bold text-[#2965E8]">{ord.public_order_reference}</td>
-                  <td className="py-3 px-4 text-[#A6B1C2]">{new Date(ord.created_at).toLocaleDateString()}</td>
+                  <td className="py-3 px-4 font-mono font-bold text-[#2965E8]">
+                    {ord.public_order_reference}
+                    <div className="text-[10px] text-[#A6B1C2] font-normal font-sans">
+                      {new Date(ord.created_at).toLocaleDateString()}
+                    </div>
+                  </td>
                   <td className="py-3 px-4">
                     <div className="font-semibold text-white">{ord.customer_name || "Guest Customer"}</div>
                     <div className="text-[11px] text-[#A6B1C2]">{ord.whatsapp_number || ord.email || ord.telegram_contact || "No contact"}</div>
+                  </td>
+                  <td className="py-3 px-4">
+                    <div className="space-y-1.5 min-w-[200px]">
+                      {ord.items && ord.items.length > 0 ? (
+                        ord.items.map((it: any, idx: number) => (
+                          <div
+                            key={idx}
+                            className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px] pb-1 border-b border-white/[0.04] last:border-b-0 last:pb-0"
+                          >
+                            <span className="font-semibold text-white truncate max-w-[140px]" title={it.product_name_snapshot}>
+                              {it.product_name_snapshot}
+                            </span>
+                            <span className="inline-flex items-center gap-1 shrink-0">
+                              <span className="text-[10px] text-[#A6B1C2]">Seller:</span>
+                              {it.seller_name ? (
+                                <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                                  {it.seller_name}
+                                </span>
+                              ) : (
+                                <span className="text-[10px] text-[#A6B1C2]/60 italic">Not assigned</span>
+                              )}
+                            </span>
+                          </div>
+                        ))
+                      ) : (
+                        <span className="text-xs text-[#A6B1C2]">1 item</span>
+                      )}
+                    </div>
                   </td>
                   <td className="py-3 px-4">
                     <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/10 text-blue-400 border border-blue-500/30 uppercase">
                       {ord.delivery_preference}
                     </span>
                   </td>
-                  <td className="py-3 px-4">
-                    <span className="text-white font-medium">{ord.items?.length || 1} item(s)</span>
-                  </td>
-                  <td className="py-3 px-4 font-bold text-emerald-400">₹{ord.total_amount}</td>
+                  <td className="py-3 px-4 font-bold text-emerald-400 font-mono">₹{ord.total_amount.toLocaleString()}</td>
                   <td className="py-3 px-4">
                     <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-white/5 border border-white/10 text-white">
                       {ord.order_status}
@@ -1598,7 +894,7 @@ function OrdersView({ showToast }: { showToast: any }) {
               ))}
               {orders.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="py-8 text-center text-[#A6B1C2]">
+                  <td colSpan={7} className="py-8 text-center text-[#A6B1C2]">
                     No orders match the selected filter.
                   </td>
                 </tr>

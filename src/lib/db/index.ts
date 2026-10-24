@@ -22,6 +22,10 @@ export class UniversalDatabase implements DatabaseExecutor {
       console.log(`[TechNKT Database] Active Driver: NEON POSTGRESQL (${sanitizeDatabaseUrl(url)})`);
       try {
         this.neonPool = new Pool({ connectionString: url });
+        this.neonPool.query(`
+          ALTER TABLE products ADD COLUMN IF NOT EXISTS seller_name VARCHAR(255);
+          ALTER TABLE order_items ADD COLUMN IF NOT EXISTS seller_name_snapshot VARCHAR(255);
+        `).catch(() => {});
       } catch (err: any) {
         console.error("[TechNKT Database] Failed to initialize Neon Pool:", err.message);
       }
@@ -46,6 +50,17 @@ export class UniversalDatabase implements DatabaseExecutor {
     this.sqliteDb = new DatabaseSync(DB_PATH);
     this.sqliteDb.exec("PRAGMA journal_mode = WAL;");
     this.sqliteDb.exec("PRAGMA foreign_keys = ON;");
+
+    try {
+      const prodCols = this.sqliteDb.prepare("PRAGMA table_info(products);").all() as any[];
+      if (prodCols && prodCols.length > 0 && !prodCols.some((c: any) => c.name === "seller_name")) {
+        this.sqliteDb.exec("ALTER TABLE products ADD COLUMN seller_name TEXT;");
+      }
+      const itemCols = this.sqliteDb.prepare("PRAGMA table_info(order_items);").all() as any[];
+      if (itemCols && itemCols.length > 0 && !itemCols.some((c: any) => c.name === "seller_name_snapshot")) {
+        this.sqliteDb.exec("ALTER TABLE order_items ADD COLUMN seller_name_snapshot TEXT;");
+      }
+    } catch {}
   }
 
   /**

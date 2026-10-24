@@ -1,22 +1,20 @@
 ---
 enable: true
 title: "Frequently Asked <strong>Questions</strong>"
-description: "Clear answers about digital subscriptions, warranty terms, and custom website development."
+description: "Clear, transparent answers covering website development, pricing, digital product delivery, and support."
 button:
   enable: true
   label: "Have More Questions? Talk With Us"
   link: "/contact"
 items:
-  - question: "How are digital subscriptions delivered after ordering?"
-    answer: "Credentials and login access details are generated and sent directly to your registered email and order confirmation screen within minutes of verified payment."
-  - question: "What is TechNKT's Replacement Warranty?"
-    answer: "Every digital subscription purchased on TechNKT includes replacement warranty coverage for its full term. If you encounter any access or login issues, message our support team on WhatsApp or email, and we will issue verified working replacement credentials."
-  - question: "Are subscription profiles private or shared?"
-    answer: "Each product clearly specifies its plan tier. Dedicated private profiles (such as Netflix 4K UHD Private Profile) feature a unique 4-digit PIN ensuring your viewing watchlist, recommendations, and playback remain completely private."
-  - question: "What technologies do you use for website development?"
-    answer: "We engineer modern websites and web applications using Astro, Next.js, React, TypeScript, and Tailwind CSS. We avoid bloated builders, ensuring sub-second load speeds, clean responsive layouts, and top Google Lighthouse performance."
-  - question: "How does the website development process work?"
-    answer: "We begin with a brief consultation to clarify your requirements, provide a fixed quote and schedule, design wireframes for your review, engineer the full-stack website, connect your domain and SEO metadata, and hand over 100% source code ownership."
-  - question: "Which payment methods are accepted?"
-    answer: "We accept all major payment methods including UPI (Google Pay, PhonePe, Paytm), Net Banking, Indian & international Credit/Debit cards, and Stripe for international orders."
+  - question: "What kinds of websites do you build, and what technologies are used?"
+    answer: "We engineer modern e-commerce stores, business websites, portfolio sites, landing pages, and custom web applications using Astro, Next.js, React, TypeScript, and Tailwind CSS. Every project is built from scratch with clean code, sub-second load times, and full responsive design."
+  - question: "How are website development pricing and project timelines determined?"
+    answer: "We provide transparent, fixed quotes based on your exact business needs. Landing pages and business websites are typically delivered within 3 to 7 working days, while custom web applications and full-scale stores take 2 to 3 weeks with clear milestones."
+  - question: "How and when are digital store products delivered?"
+    answer: "Following verified payment, access credentials, dedicated profile PINs, and setup instructions are delivered directly to your customer dashboard (/account) and registered WhatsApp/Email with clear guidance."
+  - question: "How do I track my order, and how does the Replacement Warranty work?"
+    answer: "You can track your live order status and order updates anytime under My Orders (/account). Every digital subscription includes replacement warranty coverage for its full term — if any access issue arises, our support team promptly issues verified working credentials."
+  - question: "How can I get direct support for web services or store orders?"
+    answer: "We offer dedicated human support via direct WhatsApp messaging and email (support@technkt.in). Our team is available to assist with website project inquiries, order updates, and technical setup."
 ---

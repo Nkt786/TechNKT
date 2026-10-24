@@ -1,0 +1,142 @@
+/* ==========================================================================
+   TechNKT Professional Subtle Claymorphism & Texture Design System
+   Uses EXACT TechNKT palette: #0B101A, #111724, #151D2B, #10B981 (Emerald), #F4F6FA, #A6B1C2
+   NO new colors introduced. Dimensional depth via soft layered shadows & gentle inner highlights.
+   ========================================================================== */
+
+/* 1. Subtle Dimensional Raised Card */
+.clay-card {
+  background: #151D2B;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+  box-shadow:
+    0 10px 24px -4px rgba(0, 0, 0, 0.45),
+    0 4px 8px -2px rgba(0, 0, 0, 0.3),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.12),
+    inset 1px 0 1px 0 rgba(255, 255, 255, 0.05),
+    inset 0 -2px 4px 0 rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+}
+
+/* 2. Interactive Raised Card with Soft Hover Depth & Emerald Rim */
+.clay-card-interactive {
+  background: #151D2B;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+  box-shadow:
+    0 10px 24px -4px rgba(0, 0, 0, 0.45),
+    0 4px 8px -2px rgba(0, 0, 0, 0.3),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.12),
+    inset 1px 0 1px 0 rgba(255, 255, 255, 0.05),
+    inset 0 -2px 4px 0 rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+}
+
+.clay-card-interactive:hover {
+  transform: translateY(-2px);
+  border-color: rgba(16, 185, 129, 0.35);
+  box-shadow:
+    0 16px 32px -4px rgba(0, 0, 0, 0.55),
+    0 6px 12px -2px rgba(0, 0, 0, 0.35),
+    0 0 18px -2px rgba(16, 185, 129, 0.15),
+    inset 0 1px 2px 0 rgba(255, 255, 255, 0.18),
+    inset 1px 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -2px 4px 0 rgba(0, 0, 0, 0.4);
+}
+
+/* 3. Dimensional Primary Button (Emerald) */
+.clay-btn-emerald {
+  background: #10B981;
+  color: #000000;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow:
+    0 6px 16px -2px rgba(16, 185, 129, 0.35),
+    0 2px 6px -1px rgba(0, 0, 0, 0.2),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -2px 4px 0 rgba(0, 0, 0, 0.2);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.clay-btn-emerald:hover {
+  background: #34D399;
+  box-shadow:
+    0 8px 20px -2px rgba(16, 185, 129, 0.45),
+    0 3px 8px -1px rgba(0, 0, 0, 0.25),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -2px 4px 0 rgba(0, 0, 0, 0.25);
+  transform: translateY(-1px);
+}
+
+.clay-btn-emerald:active {
+  transform: translateY(1px);
+  box-shadow:
+    0 2px 6px -1px rgba(16, 185, 129, 0.25),
+    inset 0 2px 4px 0 rgba(0, 0, 0, 0.25);
+}
+
+/* 4. Dimensional Secondary / Dark Button */
+.clay-btn-dark {
+  background: #111724;
+  color: #F4F6FA;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow:
+    0 4px 12px -2px rgba(0, 0, 0, 0.4),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -2px 3px 0 rgba(0, 0, 0, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.clay-btn-dark:hover {
+  border-color: rgba(16, 185, 129, 0.3);
+  box-shadow:
+    0 6px 16px -2px rgba(0, 0, 0, 0.5),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -2px 3px 0 rgba(0, 0, 0, 0.4);
+  transform: translateY(-1px);
+}
+
+.clay-btn-dark:active {
+  transform: translateY(1px);
+}
+
+/* 5. Dimensional Filter Pills */
+.clay-pill-active {
+  background: #10B981;
+  color: #000000;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow:
+    0 4px 12px -2px rgba(16, 185, 129, 0.35),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -2px 3px 0 rgba(0, 0, 0, 0.18);
+}
+
+.clay-pill-inactive {
+  background: rgba(255, 255, 255, 0.04);
+  color: #A6B1C2;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 2px 6px -1px rgba(0, 0, 0, 0.3),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 -1px 2px 0 rgba(0, 0, 0, 0.25);
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.clay-pill-inactive:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: #FFFFFF;
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+/* 6. Subtle Homepage Background Texture (Ultra-subtle grain, 100% seamless, non-intrusive) */
+.homepage-texture-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.028;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 160px 160px;
+}

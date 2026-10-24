@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS products (
   marketing_category VARCHAR(255),
   marketing_description TEXT,
   include_in_marketing INTEGER DEFAULT 1,
+  seller_name VARCHAR(255),
   created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
@@ -142,7 +143,8 @@ CREATE TABLE IF NOT EXISTS order_items (
   variant_name_snapshot VARCHAR(255) NOT NULL,
   unit_price_snapshot INTEGER NOT NULL, -- Integer Rupees (INR)
   quantity INTEGER NOT NULL,
-  line_total INTEGER NOT NULL -- Integer Rupees (INR)
+  line_total INTEGER NOT NULL, -- Integer Rupees (INR)
+  seller_name_snapshot VARCHAR(255)
 );
 
 CREATE TABLE IF NOT EXISTS customer_payments (

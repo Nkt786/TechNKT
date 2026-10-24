@@ -24,6 +24,7 @@ interface OrderItem {
   unit_price_snapshot: number;
   quantity: number;
   line_total: number;
+  seller_name?: string | null;
 }
 
 interface OrderRecord {
@@ -316,6 +317,16 @@ export default function OrderDeskDrawer({
                   <span className="text-[11px] text-[#A6B1C2]">
                     {item.variant_name_snapshot} × {item.quantity}
                   </span>
+                  <div className="mt-1 flex items-center gap-1.5">
+                    <span className="text-[10px] uppercase font-bold text-[#A6B1C2]">Seller:</span>
+                    {item.seller_name ? (
+                      <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                        {item.seller_name}
+                      </span>
+                    ) : (
+                      <span className="text-[11px] text-[#A6B1C2]/60 italic">Not assigned</span>
+                    )}
+                  </div>
                 </div>
                 <span className="font-mono font-bold text-white">
                   ₹{item.line_total.toLocaleString()}

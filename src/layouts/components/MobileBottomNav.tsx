@@ -51,7 +51,7 @@ export default function MobileBottomNav() {
               href={item.href}
               className={`flex-1 flex flex-col items-center justify-center py-2 px-1 rounded-xl transition-all duration-200 ${
                 active
-                  ? "bg-primary text-white shadow-sm font-semibold"
+                  ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 shadow-sm font-semibold"
                   : "text-[#A6B1C2] hover:text-white hover:bg-white/[0.04]"
               }`}
             >

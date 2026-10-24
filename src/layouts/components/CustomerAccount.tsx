@@ -124,9 +124,16 @@ export default function CustomerAccount() {
   const [passSaving, setPassSaving] = useState(false);
   const [passNotice, setPassNotice] = useState("");
 
-  // Check auth on mount
+  // Check auth and URL tab on mount
   useEffect(() => {
     checkAuth();
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const tab = params.get("tab");
+      if (tab === "orders" || tab === "messages" || tab === "profile" || tab === "security" || tab === "overview") {
+        setActiveTab(tab);
+      }
+    }
   }, []);
 
   async function checkAuth() {
