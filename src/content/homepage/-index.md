@@ -1,15 +1,15 @@
 ---
 banner:
-  title: "Everything Digital. <strong>Carefully Chosen.</strong>"
-  content: "Subscriptions, AI tools, ebooks, and modern website development — all in one place, with a cleaner buying experience."
+  title: "Professional Websites & <strong>Digital Solutions for Your Business</strong>"
+  content: "Build your online presence with professional website development and explore useful digital products, subscriptions, AI tools and more."
   button_primary:
     enable: true
-    label: "Explore Store"
-    link: "/shop"
+    label: "Get Your Website"
+    link: "/web-development"
   button_secondary:
     enable: true
-    label: "View Website Services"
-    link: "/web-development"
+    label: "Explore Digital Store"
+    link: "/shop"
 
 main_features:
   enable: false

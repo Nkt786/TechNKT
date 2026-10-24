@@ -9,6 +9,10 @@ import { dev } from "astro";
 try {
   const server = await dev({
     root: ".",
+    server: {
+      port: 4321,
+      host: true,
+    },
   });
   console.log("SERVER_ADDRESS:", server.address);
 } catch (err) {

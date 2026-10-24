@@ -5,20 +5,16 @@
       "url": "/"
     },
     {
-      "name": "Store",
-      "url": "/shop"
-    },
-    {
-      "name": "Ebooks",
-      "url": "/ebook"
-    },
-    {
-      "name": "Website Development",
+      "name": "Web Development",
       "url": "/web-development"
     },
     {
-      "name": "About",
-      "url": "/about"
+      "name": "Digital Store",
+      "url": "/shop"
+    },
+    {
+      "name": "My Orders",
+      "url": "/account?tab=orders"
     },
     {
       "name": "Contact",

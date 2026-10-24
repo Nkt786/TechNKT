@@ -35,7 +35,8 @@ export default function StoreCatalog() {
             const primaryVar = p.variants?.[0] || {};
             const minPrice = p.variants?.length
               ? Math.min(...p.variants.map((v: any) => v.price_amount))
-              : p.price_amount || 99;
+              : p.price_amount || 0;
+            const hasValidPrice = minPrice > 0;
             const compPrice = primaryVar.comparison_price_amount || 0;
 
             return {
@@ -45,10 +46,11 @@ export default function StoreCatalog() {
               image: p.image_url,
               image_url: p.image_url,
               price: minPrice,
+              hasValidPrice,
               originalPrice: compPrice,
-              formattedPrice: `₹${minPrice}`,
-              formattedOriginalPrice: compPrice > minPrice ? `₹${compPrice}` : "",
-              period: primaryVar.duration_unit ? `/${primaryVar.duration_unit}` : "/mo",
+              formattedPrice: hasValidPrice ? `₹${minPrice}` : "Ask for Price",
+              formattedOriginalPrice: (hasValidPrice && compPrice > minPrice) ? `₹${compPrice}` : "",
+              period: primaryVar.duration_unit ? `/${primaryVar.duration_unit}` : "",
               instant: Boolean(p.instant),
               badge: p.badge,
               description: p.description || p.short_description || "",
@@ -81,6 +83,10 @@ export default function StoreCatalog() {
       const cat = params.get("category");
       if (cat) {
         setSelectedCategory(cat);
+      }
+      const q = params.get("search") || params.get("q");
+      if (q) {
+        setSearchQuery(q);
       }
     }
   }, []);
@@ -201,10 +207,10 @@ export default function StoreCatalog() {
                 key={cat.id}
                 type="button"
                 onClick={() => handleCategoryChange(cat.id)}
-                className={`flex items-center gap-2.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-200 shrink-0 cursor-pointer border ${
+                className={`flex items-center gap-2.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-200 shrink-0 cursor-pointer ${
                   isSelected
-                    ? "bg-[#2965E8] text-white border-[#2965E8] shadow-md shadow-blue-500/20"
-                    : "bg-[#151D2B] text-[#A6B1C2] hover:text-white border-[#1E2837] hover:border-white/20"
+                    ? "clay-pill-active"
+                    : "clay-pill-inactive"
                 }`}
               >
                 <img
@@ -268,7 +274,7 @@ export default function StoreCatalog() {
             return (
               <div
                 key={prod.id}
-                className="group relative flex flex-col justify-between rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 bg-[#151D2B] border border-[#1E2837] hover:border-[#2965E8]/50 transition-all duration-200 hover:-translate-y-0.5"
+                className="group relative flex flex-col justify-between rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 clay-card-interactive"
               >
                 <div>
                   {/* Square Product Artwork - Click to open details */}
@@ -301,60 +307,81 @@ export default function StoreCatalog() {
                   {/* Product Title - Click to open details */}
                   <h3
                     onClick={() => setSelectedProductForModal(prod)}
-                    className="text-xs sm:text-sm font-semibold text-[#F4F6FA] mb-1.5 line-clamp-2 leading-snug cursor-pointer hover:text-[#2965E8] transition-colors"
+                    className="text-xs sm:text-sm font-semibold text-[#F4F6FA] mb-1.5 line-clamp-2 leading-snug cursor-pointer hover:text-emerald-400 transition-colors"
                   >
                     {prod.name}
                   </h3>
 
                   {/* Pricing Row */}
                   <div className="flex items-baseline gap-1.5 mb-3 flex-wrap">
-                    <span className="text-sm sm:text-base font-extrabold text-[#F4F6FA]">
-                      {prod.formattedPrice}
-                    </span>
-                    {prod.originalPrice > prod.price && (
-                      <span className="text-[11px] sm:text-xs text-[#A6B1C2]/60 line-through">
-                        {prod.formattedOriginalPrice}
+                    {prod.hasValidPrice ? (
+                      <>
+                        <span className="text-sm sm:text-base font-extrabold text-[#F4F6FA]">
+                          {prod.formattedPrice}
+                        </span>
+                        {prod.originalPrice > prod.price && (
+                          <span className="text-[11px] sm:text-xs text-[#A6B1C2]/60 line-through">
+                            {prod.formattedOriginalPrice}
+                          </span>
+                        )}
+                      </>
+                    ) : (
+                      <span className="text-xs sm:text-sm font-bold text-emerald-400">
+                        Ask for Price
                       </span>
                     )}
                   </div>
                 </div>
 
-                {/* Compact Actions Row: Cart Icon + Buy Now Button */}
+                {/* Compact Actions Row: Cart Icon + Buy Now Button OR Inquire Button */}
                 <div className="flex items-center gap-1.5 sm:gap-2 pt-1 border-t border-white/[0.04]">
-                  {/* Cart Button */}
-                  <button
-                    type="button"
-                    onClick={() => addToCart(prod, undefined, 1, false)}
-                    className={`size-8 sm:size-9 rounded-lg border flex items-center justify-center transition-all duration-150 cursor-pointer active:scale-95 shrink-0 ${
-                      isJustAdded
-                        ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-400"
-                        : "bg-white/[0.04] hover:bg-[#2965E8]/20 border-[#1E2837] hover:border-[#2965E8]/40 text-[#F4F6FA]"
-                    }`}
-                    aria-label={`Add ${prod.name} to cart`}
-                    title={isJustAdded ? "Added to Cart!" : "Add to Cart"}
-                  >
-                    {isJustAdded ? (
-                      <LuCheck className="text-sm" />
-                    ) : (
-                      <LuShoppingCart className="text-sm" />
-                    )}
-                  </button>
+                  {prod.hasValidPrice ? (
+                    <>
+                      {/* Cart Button */}
+                      <button
+                        type="button"
+                        onClick={() => addToCart(prod, undefined, 1, false)}
+                        className={`size-8 sm:size-9 rounded-lg flex items-center justify-center transition-all duration-150 cursor-pointer active:scale-95 shrink-0 ${
+                          isJustAdded
+                            ? "bg-emerald-500/20 border border-emerald-500/50 text-emerald-400"
+                            : "clay-btn-dark"
+                        }`}
+                        aria-label={`Add ${prod.name} to cart`}
+                        title={isJustAdded ? "Added to Cart!" : "Add to Cart"}
+                      >
+                        {isJustAdded ? (
+                          <LuCheck className="text-sm" />
+                        ) : (
+                          <LuShoppingCart className="text-sm" />
+                        )}
+                      </button>
 
-                  {/* Buy Now Button - Opens modal or directly checks out */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (prod.variants && prod.variants.length > 1) {
-                        setSelectedProductForModal(prod);
-                      } else {
-                        addToCart(prod, undefined, 1, true);
-                      }
-                    }}
-                    className="flex-1 h-8 sm:h-9 rounded-lg font-semibold text-xs sm:text-sm text-white flex items-center justify-center gap-1 transition-all duration-150 cursor-pointer active:scale-95 bg-[#2965E8] hover:bg-[#3D75F0] border border-white/10"
-                  >
-                    <LuZap className="size-3.5" />
-                    <span>Buy now</span>
-                  </button>
+                      {/* Buy Now Button - Opens modal or directly checks out */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (prod.variants && prod.variants.length > 1) {
+                            setSelectedProductForModal(prod);
+                          } else {
+                            addToCart(prod, undefined, 1, true);
+                          }
+                        }}
+                        className="flex-1 h-8 sm:h-9 rounded-lg font-semibold text-xs sm:text-sm flex items-center justify-center gap-1 transition-all duration-150 cursor-pointer active:scale-95 clay-btn-emerald"
+                      >
+                        <LuZap className="size-3.5" />
+                        <span>Buy now</span>
+                      </button>
+                    </>
+                  ) : (
+                    <a
+                      href={`https://wa.me/917860999000?text=${encodeURIComponent(`Hi TechNKT, I would like to inquire about pricing and availability for ${prod.name}.`)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full h-8 sm:h-9 rounded-lg font-semibold text-xs sm:text-sm flex items-center justify-center gap-1 transition-all duration-150 cursor-pointer clay-btn-emerald"
+                    >
+                      <span>Inquire / Contact</span>
+                    </a>
+                  )}
                 </div>
               </div>
             );

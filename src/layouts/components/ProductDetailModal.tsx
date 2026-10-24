@@ -152,17 +152,27 @@ Please confirm availability and the next steps. Thank you!`;
 
               {/* Dynamic Price Display */}
               <div className="flex items-baseline gap-2.5">
-                <span className="text-2xl sm:text-3xl font-extrabold text-[#F4F6FA]">
-                  ₹{currentVariant.price_amount}
-                </span>
-                {currentVariant.comparison_price_amount > currentVariant.price_amount && (
-                  <span className="text-sm text-[#A6B1C2]/60 line-through">
-                    ₹{currentVariant.comparison_price_amount}
+                {currentVariant.price_amount > 0 ? (
+                  <>
+                    <span className="text-2xl sm:text-3xl font-extrabold text-[#F4F6FA]">
+                      ₹{currentVariant.price_amount}
+                    </span>
+                    {currentVariant.comparison_price_amount > currentVariant.price_amount && (
+                      <span className="text-sm text-[#A6B1C2]/60 line-through">
+                        ₹{currentVariant.comparison_price_amount}
+                      </span>
+                    )}
+                    {currentVariant.comparison_price_amount > currentVariant.price_amount && (
+                      <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                        Save ₹{currentVariant.comparison_price_amount - currentVariant.price_amount}
+                      </span>
+                    )}
+                  </>
+                ) : (
+                  <span className="text-xl sm:text-2xl font-bold text-emerald-400">
+                    Ask for Price / Contact Us
                   </span>
                 )}
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-                  Save ₹{currentVariant.comparison_price_amount - currentVariant.price_amount}
-                </span>
               </div>
 
               {/* Variant Selector */}
@@ -220,38 +230,51 @@ Please confirm availability and the next steps. Thank you!`;
 
               {/* Action Buttons */}
               <div className="space-y-2 pt-2">
-                <div className="flex items-center gap-2">
+                {currentVariant.price_amount > 0 ? (
+                  <>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleAddToCart(false)}
+                        className={`flex-1 h-10 rounded-xl border flex items-center justify-center gap-2 font-semibold text-xs sm:text-sm transition-all cursor-pointer ${
+                          justAdded
+                            ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-400"
+                            : "clay-btn-dark"
+                        }`}
+                      >
+                        {justAdded ? <LuCheck className="text-sm" /> : <LuShoppingCart className="text-sm" />}
+                        <span>{justAdded ? "Added to Cart!" : "Add to Cart"}</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => handleAddToCart(true)}
+                        className="flex-1 h-10 rounded-xl font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-98 clay-btn-emerald"
+                      >
+                        <LuZap className="size-4" />
+                        <span>Buy Now</span>
+                      </button>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={handleWhatsAppOrder}
+                      className="w-full h-10 rounded-xl font-semibold text-xs text-white flex items-center justify-center gap-2 bg-[#25D366]/20 hover:bg-[#25D366]/30 border border-[#25D366]/40 text-[#25D366] transition-all cursor-pointer"
+                    >
+                      <LuPhone className="size-3.5" />
+                      <span>Order on WhatsApp (+91 9822587641)</span>
+                    </button>
+                  </>
+                ) : (
                   <button
                     type="button"
-                    onClick={() => handleAddToCart(false)}
-                    className={`flex-1 h-10 rounded-xl border flex items-center justify-center gap-2 font-semibold text-xs sm:text-sm transition-all cursor-pointer ${
-                      justAdded
-                        ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-400"
-                        : "bg-white/[0.04] hover:bg-[#2965E8]/20 border-[#1E2837] hover:border-[#2965E8]/40 text-[#F4F6FA]"
-                    }`}
+                    onClick={handleWhatsAppOrder}
+                    className="w-full h-11 rounded-xl font-bold text-sm text-black flex items-center justify-center gap-2 clay-btn-emerald transition-all cursor-pointer"
                   >
-                    {justAdded ? <LuCheck className="text-sm" /> : <LuShoppingCart className="text-sm" />}
-                    <span>{justAdded ? "Added to Cart!" : "Add to Cart"}</span>
+                    <LuPhone className="size-4" />
+                    <span>Ask for Price / Inquire via WhatsApp</span>
                   </button>
-
-                  <button
-                    type="button"
-                    onClick={() => handleAddToCart(true)}
-                    className="flex-1 h-10 rounded-xl font-semibold text-xs sm:text-sm text-white flex items-center justify-center gap-1.5 bg-[#2965E8] hover:bg-[#3D75F0] border border-white/10 shadow-md shadow-blue-500/20 transition-all cursor-pointer active:scale-98"
-                  >
-                    <LuZap className="size-4" />
-                    <span>Buy Now</span>
-                  </button>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={handleWhatsAppOrder}
-                  className="w-full h-10 rounded-xl font-semibold text-xs text-white flex items-center justify-center gap-2 bg-[#25D366]/20 hover:bg-[#25D366]/30 border border-[#25D366]/40 text-[#25D366] transition-all cursor-pointer"
-                >
-                  <LuPhone className="size-3.5" />
-                  <span>Order on WhatsApp (+91 9822587641)</span>
-                </button>
+                )}
               </div>
             </div>
           </div>

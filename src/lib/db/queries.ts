@@ -46,6 +46,7 @@ export interface ProductRecord {
   marketing_category: string | null;
   marketing_description: string | null;
   include_in_marketing: number;
+  seller_name?: string | null;
   created_at: string;
   updated_at: string;
   variants?: VariantRecord[];
@@ -61,6 +62,8 @@ export interface OrderItemRecord {
   unit_price_snapshot: number;
   quantity: number;
   line_total: number;
+  seller_name_snapshot?: string | null;
+  seller_name?: string | null;
 }
 
 export interface OrderRecord {
@@ -177,6 +180,7 @@ export async function createProduct(data: {
   marketing_category?: string;
   marketing_description?: string;
   include_in_marketing?: boolean;
+  seller_name?: string;
 }): Promise<ProductRecord> {
   const id = data.id || `prod_${crypto.randomBytes(6).toString("hex")}`;
   const now = new Date().toISOString();
@@ -186,8 +190,8 @@ export async function createProduct(data: {
       id, slug, name, category_id, image_url, short_description, description,
       badge, instant, status, featured, sort_order,
       marketing_title, marketing_category, marketing_description, include_in_marketing,
-      created_at, updated_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      seller_name, created_at, updated_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       id,
       data.slug,
@@ -205,6 +209,7 @@ export async function createProduct(data: {
       data.marketing_category || null,
       data.marketing_description || null,
       data.include_in_marketing !== false ? 1 : 0,
+      data.seller_name ? data.seller_name.trim() : null,
       now,
       now,
     ]
@@ -231,6 +236,7 @@ export async function updateProduct(
     marketing_category: string;
     marketing_description: string;
     include_in_marketing: boolean;
+    seller_name: string;
   }>
 ): Promise<ProductRecord | null> {
   const existing = await getProductById(id);
@@ -254,6 +260,7 @@ export async function updateProduct(
       marketing_category = COALESCE(?, marketing_category),
       marketing_description = COALESCE(?, marketing_description),
       include_in_marketing = COALESCE(?, include_in_marketing),
+      seller_name = COALESCE(?, seller_name),
       updated_at = ?
     WHERE id = ?`,
     [
@@ -272,6 +279,7 @@ export async function updateProduct(
       data.marketing_category ?? null,
       data.marketing_description ?? null,
       data.include_in_marketing !== undefined ? (data.include_in_marketing ? 1 : 0) : null,
+      data.seller_name !== undefined ? (data.seller_name ? data.seller_name.trim() : "") : null,
       now,
       id,
     ]
@@ -510,12 +518,16 @@ export async function createOrderWithGuestContact(params: {
     const lines: OrderItemRecord[] = [];
     for (const line of validatedLines) {
       const lineId = `itm_${crypto.randomBytes(6).toString("hex")}`;
+      // Capture product's seller_name snapshot for internal fulfillment
+      const productRec = await tx.get<any>(`SELECT seller_name FROM products WHERE id = ?`, [line.product.id]);
+      const itemSeller = line.product.seller_name || productRec?.seller_name || null;
+
       await tx.run(
         `INSERT INTO order_items (
           id, order_id, product_id, product_variant_id,
           product_name_snapshot, variant_name_snapshot,
-          unit_price_snapshot, quantity, line_total
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          unit_price_snapshot, quantity, line_total, seller_name_snapshot
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           lineId,
           orderId,
@@ -526,6 +538,7 @@ export async function createOrderWithGuestContact(params: {
           line.variant.price_amount,
           line.quantity,
           line.line_total,
+          itemSeller,
         ]
       );
 
@@ -539,6 +552,8 @@ export async function createOrderWithGuestContact(params: {
         unit_price_snapshot: line.variant.price_amount,
         quantity: line.quantity,
         line_total: line.line_total,
+        seller_name_snapshot: itemSeller,
+        seller_name: itemSeller,
       });
 
       // Auto-assign preferred supplier offer if available
@@ -606,7 +621,17 @@ export async function getOrderByReference(reference: string): Promise<OrderRecor
   );
   if (!order) return null;
 
-  order.items = await db.query<OrderItemRecord>(`SELECT * FROM order_items WHERE order_id = ?`, [order.id]);
+  const rawItems = await db.query<any>(
+    `SELECT oi.*, p.seller_name as current_product_seller
+    FROM order_items oi
+    LEFT JOIN products p ON oi.product_id = p.id
+    WHERE oi.order_id = ?`,
+    [order.id]
+  );
+  order.items = rawItems.map((it) => ({
+    ...it,
+    seller_name: it.seller_name_snapshot || it.current_product_seller || null,
+  }));
   return order;
 }
 
@@ -621,7 +646,17 @@ export async function getOrderById(id: string): Promise<OrderRecord | null> {
   );
   if (!order) return null;
 
-  order.items = await db.query<OrderItemRecord>(`SELECT * FROM order_items WHERE order_id = ?`, [order.id]);
+  const rawItems = await db.query<any>(
+    `SELECT oi.*, p.seller_name as current_product_seller
+    FROM order_items oi
+    LEFT JOIN products p ON oi.product_id = p.id
+    WHERE oi.order_id = ?`,
+    [id]
+  );
+  order.items = rawItems.map((it) => ({
+    ...it,
+    seller_name: it.seller_name_snapshot || it.current_product_seller || null,
+  }));
   return order;
 }
 
@@ -674,7 +709,17 @@ export async function getOrders(filters?: {
   const orders = (await db.query<OrderRecord>(dataQuery, dataParams)) || [];
 
   for (const o of orders) {
-    o.items = await db.query<OrderItemRecord>(`SELECT * FROM order_items WHERE order_id = ?`, [o.id]);
+    const rawItems = await db.query<any>(
+      `SELECT oi.*, p.seller_name as current_product_seller
+      FROM order_items oi
+      LEFT JOIN products p ON oi.product_id = p.id
+      WHERE oi.order_id = ?`,
+      [o.id]
+    );
+    o.items = rawItems.map((it) => ({
+      ...it,
+      seller_name: it.seller_name_snapshot || it.current_product_seller || null,
+    }));
   }
 
   return { orders, total };
@@ -1918,7 +1963,9 @@ export async function getCustomerOrders(userId: string): Promise<OrderRecord[]> 
   );
 
   for (const ord of orders) {
-    ord.items = await db.query<OrderItemRecord>(`SELECT * FROM order_items WHERE order_id = ?`, [ord.id]);
+    const rawItems = await db.query<any>(`SELECT * FROM order_items WHERE order_id = ?`, [ord.id]);
+    // STRICT SECURITY: Remove all internal seller metadata before sending to customer
+    ord.items = rawItems.map(({ seller_name_snapshot, ...rest }: any) => rest);
   }
   return orders;
 }
@@ -1929,8 +1976,31 @@ export async function getCustomerOrderById(orderId: string, userId: string): Pro
     userId,
   ]);
   if (!order) return null;
-  order.items = await db.query<OrderItemRecord>(`SELECT * FROM order_items WHERE order_id = ?`, [order.id]);
+  const rawItems = await db.query<any>(`SELECT * FROM order_items WHERE order_id = ?`, [order.id]);
+  // STRICT SECURITY: Remove all internal seller metadata before sending to customer
+  order.items = rawItems.map(({ seller_name_snapshot, ...rest }: any) => rest);
   return order;
+}
+
+export async function getDistinctSellerNames(): Promise<string[]> {
+  try {
+    const prodSellers = await db.query<{ seller_name: string }>(
+      `SELECT DISTINCT seller_name FROM products WHERE seller_name IS NOT NULL AND seller_name != ''`
+    );
+    const suppSellers = await db.query<{ name: string }>(
+      `SELECT DISTINCT name FROM suppliers WHERE name IS NOT NULL AND name != ''`
+    );
+    const set = new Set<string>();
+    prodSellers.forEach((r) => {
+      if (r.seller_name && r.seller_name.trim()) set.add(r.seller_name.trim());
+    });
+    suppSellers.forEach((r) => {
+      if (r.name && r.name.trim()) set.add(r.name.trim());
+    });
+    return Array.from(set).sort((a, b) => a.localeCompare(b));
+  } catch {
+    return [];
+  }
 }
 
 export async function getAllCustomers(): Promise<
