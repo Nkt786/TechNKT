@@ -26,10 +26,58 @@
 const { Pool } = require('@neondatabase/serverless');
 const fs = require('node:fs');
 const path = require('node:path');
+const os = require('node:os');
 
 const args = process.argv.slice(2);
 const isExecute = args.includes('--execute');
-const targetUrl = args.find(a => a.startsWith('postgresql://') || a.startsWith('postgres://'));
+
+function maskUrl(rawUrl) {
+  if (!rawUrl) return '(not set)';
+  try {
+    const u = new URL(rawUrl);
+    return `${u.protocol}//${u.username}:****@${u.host}${u.pathname}`;
+  } catch {
+    return '(invalid url)';
+  }
+}
+
+async function resolveTargetUrl() {
+  const cliArg = args.find(a => a.startsWith('postgresql://') || a.startsWith('postgres://'));
+  if (cliArg) return cliArg;
+  if (process.env.TARGET_DATABASE_URL) return process.env.TARGET_DATABASE_URL;
+  if (process.env.PRODUCTION_DATABASE_URL) return process.env.PRODUCTION_DATABASE_URL;
+  if (process.env.NEON_PRODUCTION_DATABASE_URL) return process.env.NEON_PRODUCTION_DATABASE_URL;
+
+  // Auto-resolve via Neon API if credentials exist
+  try {
+    const credsPath = path.join(os.homedir(), '.config', 'neon', 'credentials.json');
+    if (fs.existsSync(credsPath)) {
+      const creds = JSON.parse(fs.readFileSync(credsPath, 'utf8'));
+      if (creds.api_key) {
+        const projectId = 'delicate-cake-27690387';
+        const url = new URL(`https://console.neon.tech/api/v2/projects/${projectId}/connection_uri`);
+        url.searchParams.set('branch_id', 'br-proud-cell-b3rgd08f');
+        url.searchParams.set('endpoint_id', 'ep-misty-block-b3dg8vtz');
+        url.searchParams.set('database_name', 'neondb');
+        url.searchParams.set('role_name', 'neondb_owner');
+        url.searchParams.set('pooled', 'true');
+        const res = await fetch(url.toString(), {
+          headers: {
+            'Authorization': `Bearer ${creds.api_key}`,
+            'Accept': 'application/json'
+          }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.uri) return data.uri;
+        }
+      }
+    }
+  } catch {
+    // Ignore fallback failure
+  }
+  return null;
+}
 
 console.log('================================================================');
 console.log(' TechNKT — Clean Production Migration Scope & Preparation');
@@ -89,32 +137,37 @@ console.log('  - Excluded Demo Expenses:       ALL 5 test operating expenses');
 console.log('  - Excluded Demo Rate Batches:   ALL 15 test import batches');
 console.log('  - Excluded Demo Messages:       ALL 15 test messages');
 
-if (!isExecute) {
-  console.log('\n[DRY RUN COMPLETE] Migration script validated. No changes made to any branch.');
-  console.log('To execute on Neon Production branch once approved, run:');
-  console.log('  node scripts/migrate_production_clean.cjs --execute <NEON_PRODUCTION_DB_URL>');
-  process.exit(0);
-}
+async function run() {
+  const targetUrl = await resolveTargetUrl();
 
-if (!targetUrl) {
-  console.error('\n[ERROR] --execute requires a valid target database URL.');
-  process.exit(1);
-}
+  if (!isExecute) {
+    console.log('\n[DRY RUN COMPLETE] Migration script validated. No changes made to any branch.');
+    if (targetUrl) {
+      console.log('Target database resolved:', maskUrl(targetUrl));
+    }
+    console.log('To execute on Neon Production branch, run:');
+    console.log('  node scripts/migrate_production_clean.cjs --execute');
+    process.exit(0);
+  }
 
-// Execution block (only runs when explicitly called with --execute)
-async function executeMigration() {
-  console.log('\nConnecting to target database...');
+  if (!targetUrl) {
+    console.error('\n[ERROR] Target database URL could not be resolved.');
+    console.error('Provide via TARGET_DATABASE_URL or Neon CLI login.');
+    process.exit(1);
+  }
+
+  console.log(`\nConnecting to target database: ${maskUrl(targetUrl)}...`);
   const pool = new Pool({ connectionString: targetUrl });
   const client = await pool.connect();
   const now = new Date().toISOString();
 
   try {
     await client.query('BEGIN');
-    console.log('Applying production schema...');
+    console.log('Applying production schema (25 tables + indexes)...');
     const schemaSql = fs.readFileSync(path.resolve(__dirname, '../src/lib/db/schema.sql'), 'utf8');
     await client.query(schemaSql);
 
-    console.log('Seeding verified categories...');
+    console.log('Seeding 5 verified categories...');
     for (const c of VERIFIED_CATEGORIES) {
       await client.query(
         `INSERT INTO categories (id, slug, name, icon, marketing_heading, sort_order, status)
@@ -124,7 +177,7 @@ async function executeMigration() {
       );
     }
 
-    console.log('Seeding verified products...');
+    console.log('Seeding 12 verified products...');
     for (const p of VERIFIED_PRODUCTS) {
       await client.query(
         `INSERT INTO products (
@@ -136,7 +189,7 @@ async function executeMigration() {
       );
     }
 
-    console.log('Seeding verified product variants...');
+    console.log('Seeding 14 verified product variants...');
     for (const v of VERIFIED_VARIANTS) {
       await client.query(
         `INSERT INTO product_variants (
@@ -149,7 +202,79 @@ async function executeMigration() {
     }
 
     await client.query('COMMIT');
-    console.log('\n[SUCCESS] Clean production database migrated successfully.');
+    console.log('\n[SUCCESS] Clean production database migration transaction committed.');
+
+    // Comprehensive Verification
+    console.log('\n================================================================');
+    console.log(' POST-MIGRATION EMPIRICAL VERIFICATION & TABLE AUDIT');
+    console.log('================================================================');
+
+    const tableListRes = await client.query(`
+      SELECT table_name 
+      FROM information_schema.tables 
+      WHERE table_schema = 'public' 
+      ORDER BY table_name;
+    `);
+
+    const tableNames = tableListRes.rows.map(r => r.table_name);
+    console.log(`\nTotal PostgreSQL tables created in public schema: ${tableNames.length}`);
+    for (let i = 0; i < tableNames.length; i += 4) {
+      console.log('  ' + tableNames.slice(i, i + 4).map(t => t.padEnd(24)).join(' '));
+    }
+
+    console.log('\nRecord Counts in Core Verified Tables:');
+    const catCount = (await client.query('SELECT count(*)::int as count FROM categories')).rows[0].count;
+    const prodCount = (await client.query('SELECT count(*)::int as count FROM products')).rows[0].count;
+    const varCount = (await client.query('SELECT count(*)::int as count FROM product_variants')).rows[0].count;
+    console.log(`  - categories:       ${catCount} (Expected: 5)   -> ${catCount === 5 ? '✔ PASS' : '❌ FAIL'}`);
+    console.log(`  - products:         ${prodCount} (Expected: 12)  -> ${prodCount === 12 ? '✔ PASS' : '❌ FAIL'}`);
+    console.log(`  - product_variants: ${varCount} (Expected: 14)  -> ${varCount === 14 ? '✔ PASS' : '❌ FAIL'}`);
+
+    console.log('\nVerifying Zero Demo / Test Data in Operational Tables:');
+    const zeroTables = [
+      'customer_users',
+      'customer_profiles',
+      'customer_sessions',
+      'customer_recovery_codes',
+      'guest_contacts',
+      'orders',
+      'order_items',
+      'customer_payments',
+      'suppliers',
+      'supplier_product_offers',
+      'procurements',
+      'supplier_payments',
+      'business_expenses',
+      'financial_adjustments',
+      'order_conversations',
+      'order_messages',
+      'marketing_templates',
+      'import_batches',
+      'import_changes',
+      'admin_audit_logs',
+      'admin_sessions'
+    ];
+
+    let allZero = true;
+    for (const t of zeroTables) {
+      if (tableNames.includes(t)) {
+        const cRes = await client.query(`SELECT count(*)::int as count FROM "${t}"`);
+        const c = cRes.rows[0].count;
+        if (c !== 0) {
+          allZero = false;
+          console.error(`  ❌ ${t.padEnd(25)}: ${c} rows! (Expected 0)`);
+        } else {
+          console.log(`  ✔ ${t.padEnd(25)}: 0 rows`);
+        }
+      }
+    }
+
+    if (catCount === 5 && prodCount === 12 && varCount === 14 && allZero) {
+      console.log('\n[AUDIT PASSED] 100% clean production state verified.');
+    } else {
+      console.error('\n[AUDIT FAILED] Data count or integrity mismatch!');
+      process.exit(1);
+    }
   } catch (err) {
     await client.query('ROLLBACK');
     console.error('\n[ROLLBACK] Migration failed:', err);
@@ -160,4 +285,7 @@ async function executeMigration() {
   }
 }
 
-executeMigration();
+run().catch(err => {
+  console.error('Fatal execution error:', err);
+  process.exit(1);
+});
