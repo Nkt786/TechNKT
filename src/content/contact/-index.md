@@ -14,8 +14,8 @@ contact_info:
   items:
     - type: "email"
       title: "Email Support"
-      detail: "support@technkt.com"
-      link: "mailto:support@technkt.com"
+      detail: "support@technkt.in"
+      link: "mailto:support@technkt.in"
       icon: "FaEnvelope"
     - type: "phone"
       title: "Direct WhatsApp"
@@ -25,6 +25,6 @@ contact_info:
     - type: "calendar"
       title: "Website Consultation"
       detail: "Discuss your website vision"
-      link: "mailto:support@technkt.com?subject=Website%20Development%20Consultation"
+      link: "mailto:support@technkt.in?subject=Website%20Development%20Consultation"
       icon: "FaCalendarCheck"
 ---

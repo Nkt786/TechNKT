@@ -8,7 +8,7 @@ draft: false
 
 **Last Updated:** October 2026
 
-Welcome to **TechNKT**. By accessing our website (https://technkt.com) or purchasing any digital subscriptions, ebooks, or website development services from us, you agree to be bound by the following Terms and Conditions. Please review them carefully.
+Welcome to **TechNKT**. By accessing our website (https://technkt.in) or purchasing any digital subscriptions, ebooks, or website development services from us, you agree to be bound by the following Terms and Conditions. Please review them carefully.
 
 ---
 
@@ -62,5 +62,5 @@ TechNKT strives to ensure uninterrupted service across all digital offerings. Ho
 
 For any inquiries, warranty requests, or clarification regarding these Terms, contact us:
 
-- **Email:** support@technkt.com
-- **Website:** [technkt.com/contact](/contact)
+- **Email:** support@technkt.in
+- **Website:** [technkt.in/contact](/contact)

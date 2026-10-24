@@ -8,7 +8,7 @@ draft: false
 
 **Last Updated:** October 2026
 
-At **TechNKT** (accessible from https://technkt.com), your privacy and data security are central to everything we build. This Privacy Policy outlines the types of information we collect, how it is used, and the steps we take to ensure your personal details and order information remain safe.
+At **TechNKT** (accessible from https://technkt.in), your privacy and data security are central to everything we build. This Privacy Policy outlines the types of information we collect, how it is used, and the steps we take to ensure your personal details and order information remain safe.
 
 ---
 
@@ -81,5 +81,5 @@ You have the right to:
 
 If you have questions about this Privacy Policy or wish to exercise any of your data rights, please contact our support team:
 
-- **Email:** support@technkt.com
-- **Website:** [technkt.com/contact](/contact)
+- **Email:** support@technkt.in
+- **Website:** [technkt.in/contact](/contact)

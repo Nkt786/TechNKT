@@ -1,6 +1,7 @@
 [build]
-publish = "dist"
-command = "yarn build"
+  command = "pnpm run build"
+  publish = "dist"
 
 [build.environment]
-NODE_VERSION = "22.20.0"
+  NODE_VERSION = "24"
+
